@@ -1,0 +1,6 @@
+framework module Pods_metapp {
+  umbrella header "Pods-metapp-umbrella.h"
+
+  export *
+  module * { export * }
+}

@@ -1,0 +1,6 @@
+framework module Carpaccio {
+  umbrella header "Carpaccio-umbrella.h"
+
+  export *
+  module * { export * }
+}
