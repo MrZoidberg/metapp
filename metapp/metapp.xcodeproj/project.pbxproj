@@ -287,7 +287,7 @@
 				TargetAttributes = {
 					3D67417E1D943CC80096074E = {
 						CreatedOnToolsVersion = 8.0;
-						DevelopmentTeam = 32386SWPXJ;
+						DevelopmentTeam = BUQ778JG24;
 						ProvisioningStyle = Automatic;
 					};
 					3D6741921D943CCA0096074E = {
@@ -651,7 +651,7 @@
 			baseConfigurationReference = CB06196085489379737F9BC3 /* Pods-metapp.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 32386SWPXJ;
+				DEVELOPMENT_TEAM = BUQ778JG24;
 				INFOPLIST_FILE = metapp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.zoidsoft.metapp;
@@ -665,7 +665,7 @@
 			baseConfigurationReference = 944CFB304737A1A877DF46CC /* Pods-metapp.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 32386SWPXJ;
+				DEVELOPMENT_TEAM = BUQ778JG24;
 				INFOPLIST_FILE = metapp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.zoidsoft.metapp;

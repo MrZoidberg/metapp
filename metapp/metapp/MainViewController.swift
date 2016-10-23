@@ -7,9 +7,10 @@
 //
 
 import UIKit
-import RxSwift
 import RxDataSources
+import RxSwift
 import RxCocoa
+import Photos
 
 typealias SectionPhotoModel = SectionModel<String, MAPhoto>
 
@@ -21,10 +22,12 @@ class MainViewController: UIViewController, UICollectionViewDelegate {
 	
 	let disposeBag = DisposeBag()
 	
-	let dataSource = RxCollectionViewSectionedReloadDataSource<SectionModel<String, MAPhoto>>()
+	let collectionDataSource = RxCollectionViewSectionedReloadDataSource<SectionPhotoModel>()
 	
 	// MARK: Properties
 	var viewModel: MainViewModel?
+    let photoItems: PublishSubject<MAPhoto> = PublishSubject<MAPhoto>()
+    
 	@IBOutlet weak var collectionView: UICollectionView!
 	
 	override func viewDidLoad() {
@@ -35,16 +38,24 @@ class MainViewController: UIViewController, UICollectionViewDelegate {
 			return
 		}
 		
-		dataSource.configureCell = { (ds, cv, ip, i) in
+		collectionDataSource.configureCell = { (ds, cv, ip, i) in
 			let cell = cv.dequeueReusableCell(withReuseIdentifier: "Cell", for: ip) as! PhotoCell
 			cell.image = ds[ip].image
 			return cell
-		}
-		
-		viewModel?.assets.asObservable().reduce([MAPhoto](), accumulator: { ar, photo in
-			ar.append(photo)
-			return ar
-			}, mapResult: { SectionPhotoModel(model: "1", items: $0 )})//.bindTo(a(dataSource: dataSource))
+        }
+        
+        Observable.from(viewModel!.assets!).subscribe{ event in
+                self.viewModel!.requestImage(PHAsset(), { (image) in
+                    self.photoItems.onNext(MAPhoto(image: image, id: event.element!?.localIdentifier, index: 0))
+                })
+        }.addDisposableTo(disposeBag)
+    
+        let r = photoItems.toArray()
+            })//.bindTo(collectionView.rx.items(dataSource: self.collectionDataSource)).addDisposableTo(disposeBag)
+        
+        collectionView.rx
+            .setDelegate(self)
+            .addDisposableTo(disposeBag)
 	}
 
 	override func didReceiveMemoryWarning() {
