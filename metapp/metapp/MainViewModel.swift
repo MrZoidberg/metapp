@@ -20,13 +20,7 @@ class MainViewModel: MAViewModel {
 	private var fetchResult: PHFetchResult<PHAsset>?
 	
     let assets: PublishSubject<PHAsset> = PublishSubject<PHAsset>()
-    private var photoCount = 0
-    var count: Int {
-        get {
-            return photoCount
-        }
-    }
-	
+
 	override init() {
 		super.init()
 		
@@ -38,7 +32,7 @@ class MainViewModel: MAViewModel {
 			options.sortDescriptors = [
 				NSSortDescriptor(key: "creationDate", ascending: false)
 			]
-			options.fetchLimit = 100
+			//options.fetchLimit = 100
 			
 			self.fetchResult = PHAsset.fetchAssets(with: .image, options: options)
 			
@@ -72,15 +66,15 @@ class MainViewModel: MAViewModel {
 		}
 	}
 	
-	func requestImage(_ asset: PHAsset, _ usingBlock: @escaping (UIImage) -> Void) {
+	func requestImage(_ asset: PHAsset, _ size: CGSize, _ usingBlock: @escaping (UIImage) -> Void) {
 		let options = PHImageRequestOptions()
 		options.isNetworkAccessAllowed = true
 		options.isSynchronous = false
 		//options.deliveryMode = PHImageRequestOptionsDeliveryModeOpportunistic
-        		
+		
 		self.imageManager!.requestImage(for: asset,
-		                                        targetSize: CGSize(width: asset.pixelWidth, height: asset.pixelHeight),
-		                                        contentMode: .aspectFill,
+		                                        targetSize: size,
+		                                        contentMode: .aspectFit,
 		                                        options: options) {
 													result, info in
 													

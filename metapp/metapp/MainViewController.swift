@@ -66,6 +66,8 @@ class MainViewController: UIViewController, UICollectionViewDelegate {
 	// MARK: Properties
 	var viewModel: MainViewModel?
     let photoItems: PublishSubject<MAPhoto> = PublishSubject<MAPhoto>()
+	
+	var collectionItemSize: CGSize?
     
 	@IBOutlet weak var collectionView: UICollectionView!
 	
@@ -77,15 +79,24 @@ class MainViewController: UIViewController, UICollectionViewDelegate {
 			return
 		}
 		
+		collectionItemSize = CGSize(width: 170, height: 170)
+		
+		
 		collectionDataSource.configureCell = { (ds, cv, ip, i) in
 			let cell = cv.dequeueReusableCell(withReuseIdentifier: "PhotoCell", for: ip) as! PhotoCell
-			let photoModel = ds[ip] 
-			self.viewModel!.requestImage(photoModel.asset!, { (image) in
-				print("loading photo " + photoModel.identity)
+			let photoModel = ds[ip]
+			self.viewModel!.requestImage(photoModel.asset!, self.collectionItemSize!, { (image) in
+				print("loading photo \(photoModel.identity) +  for \(ip.description)")
 				cell.image.image = image
 			})
 			return cell
         }
+		
+		(collectionView.collectionViewLayout as? UICollectionViewFlowLayout)?.itemSize = collectionItemSize!
+		
+		collectionView.rx
+			.setDelegate(self)
+			.addDisposableTo(disposeBag)
 		
 		photoItems.asObservable()
 			.reduce([MAPhoto]()) {acc, photo in
@@ -113,13 +124,7 @@ class MainViewController: UIViewController, UICollectionViewDelegate {
 			self.photoItems.onNext(MAPhoto(image: nil, id: asset.localIdentifier, asset: asset))
 			
         }.addDisposableTo(disposeBag)
-		
-					//.bindTo(collectionView.rx.items(dataSource: collectionDataSource))
-			//.addDisposableTo(disposeBag)
 
-		collectionView.rx
-            .setDelegate(self)
-            .addDisposableTo(disposeBag)
 	}
 
 	override func didReceiveMemoryWarning() {
@@ -127,4 +132,3 @@ class MainViewController: UIViewController, UICollectionViewDelegate {
 		// Dispose of any resources that can be recreated.
 	}
 }
-
