@@ -9,10 +9,49 @@
 import UIKit
 import RxDataSources
 import RxSwift
-import RxCocoa
+//import RxCocoa
 import Photos
 
-typealias SectionPhotoModel = SectionModel<String, MAPhoto>
+struct PhotoSection {
+	var header: String
+	
+	var photos: [MAPhoto]
+	
+	var updated: Date
+	
+	init(header: String, photos: [MAPhoto], updated: Date) {
+		self.header = header
+		self.photos = photos
+		self.updated = updated
+	}
+}
+
+extension MAPhoto : IdentifiableType  {
+	typealias Identity = String
+	
+	var identity: String {
+		return id as! String
+	}
+}
+
+extension PhotoSection : AnimatableSectionModelType {
+	typealias Item = MAPhoto
+	typealias Identity = String
+	
+	var identity: String {
+		return header
+	}
+	
+	var items: [MAPhoto] {
+		return photos
+	}
+	
+	init(original: PhotoSection, items: [Item]) {
+		self = original
+		self.photos = items
+	}
+}
+
 
 class PhotoCell: UICollectionViewCell {
 	@IBOutlet var image: UIImage?
@@ -22,7 +61,7 @@ class MainViewController: UIViewController, UICollectionViewDelegate {
 	
 	let disposeBag = DisposeBag()
 	
-	let collectionDataSource = RxCollectionViewSectionedReloadDataSource<SectionPhotoModel>()
+	let collectionDataSource = RxCollectionViewSectionedAnimatedDataSource<PhotoSection>()
 	
 	// MARK: Properties
 	var viewModel: MainViewModel?
@@ -43,16 +82,25 @@ class MainViewController: UIViewController, UICollectionViewDelegate {
 			cell.image = ds[ip].image
 			return cell
         }
-        
+	
         Observable.from(viewModel!.assets!).subscribe{ event in
                 self.viewModel!.requestImage(PHAsset(), { (image) in
                     self.photoItems.onNext(MAPhoto(image: image, id: event.element!?.localIdentifier, index: 0))
                 })
         }.addDisposableTo(disposeBag)
-    
-        let r = photoItems.toArray()
-            })//.bindTo(collectionView.rx.items(dataSource: self.collectionDataSource)).addDisposableTo(disposeBag)
-        
+		
+		photoItems
+			.reduce([MAPhoto]()) {acc, photo in
+				var newAcc = acc;
+				newAcc.append(photo)
+				return newAcc
+			}
+			.map { photos in
+				return [PhotoSection(header: "1", photos: photos, updated: Date.init())]
+			}
+			.bindTo(collectionView.rx.items(dataSource: collectionDataSource))
+			.addDisposableTo(disposeBag)
+
         collectionView.rx
             .setDelegate(self)
             .addDisposableTo(disposeBag)

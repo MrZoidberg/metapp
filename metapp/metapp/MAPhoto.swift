@@ -9,8 +9,13 @@
 import Foundation
 import UIKit
 
-struct MAPhoto {
+struct MAPhoto: Equatable {
 	var image: UIImage?
 	var id: AnyHashable?
 	let index: Int
 }
+
+func == (lhs: MAPhoto, rhs: MAPhoto) -> Bool {
+	return lhs.id == rhs.id && lhs.index == rhs.index
+}
+

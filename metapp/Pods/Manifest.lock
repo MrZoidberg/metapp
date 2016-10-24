@@ -1,13 +1,13 @@
 PODS:
   - AsyncSwift (2.0.0)
   - Carpaccio (0.0.5)
-  - RxCocoa (3.0.0-beta.1):
-    - RxSwift (~> 3.0.0-beta.1)
-  - RxDataSources (1.0.0-beta.2):
-    - RxCocoa (~> 3.0.0-beta.1)
-    - RxSwift (~> 3.0.0-beta.1)
-  - RxSwift (3.0.0-beta.1)
-  - SnapKit (3.0.0)
+  - RxCocoa (3.0.0):
+    - RxSwift (~> 3.0)
+  - RxDataSources (1.0.0):
+    - RxCocoa (~> 3.0)
+    - RxSwift (~> 3.0)
+  - RxSwift (3.0.0)
+  - SnapKit (3.0.2)
   - Swinject (2.0.0-beta.2)
   - SwinjectStoryboard (1.0.0-beta.2):
     - Swinject (= 2.0.0-beta.2)
@@ -15,9 +15,9 @@ PODS:
 DEPENDENCIES:
   - AsyncSwift (from `https://github.com/duemunk/Async`)
   - Carpaccio (from `https://github.com/MrZoidberg/Carpaccio.git`)
-  - RxCocoa (~> 3.0.0-beta.1)
-  - RxDataSources (~> 1.0.0-beta.2)
-  - RxSwift (~> 3.0.0-beta.1)
+  - RxCocoa (~> 3.0.0)
+  - RxDataSources (~> 1.0.0)
+  - RxSwift (~> 3.0.0)
   - SnapKit (~> 3.0)
   - Swinject (= 2.0.0-beta.2)
   - SwinjectStoryboard (= 1.0.0-beta.2)
@@ -39,13 +39,13 @@ CHECKOUT OPTIONS:
 SPEC CHECKSUMS:
   AsyncSwift: 6ba6ed9ecb51344458063f7c86fe447ab824e313
   Carpaccio: 24361e87bce73d05f914e45c4aa24e24b230cef5
-  RxCocoa: 8cecf331302b8ae5381bbab1bccba4ede2eae6a8
-  RxDataSources: 1cd87dc97fd46be002942eb1dcb1b432535141dd
-  RxSwift: 0823e8d7969c23bfa9ddfb2afa4881e424a1a710
-  SnapKit: 98af0a4e9369d3c58f758967518081dbdc7eb1d9
+  RxCocoa: 0a2f3ae381cf16f4021a4cee7a4420f83058a965
+  RxDataSources: 824693e84d00781d0a5e5cedc1ff95ce9250aacd
+  RxSwift: a930cd662f5b4a7ca9dc3518585dba91dadf497c
+  SnapKit: 2e456761aa92d4d4067a7a5594c18769d451a8ad
   Swinject: 69a893192efa9f2cc44be79ef423d04d571b6af9
   SwinjectStoryboard: b52b45821a50386ef604c3cd098f8029a50a268d
 
-PODFILE CHECKSUM: e93f6167b06a930bddd25d0fc605bce5ce2ce4fb
+PODFILE CHECKSUM: 149e1464bc0df21694873cbc2e391336e6849c6d
 
-COCOAPODS: 1.1.0.rc.2
+COCOAPODS: 1.1.1
