@@ -54,7 +54,7 @@ extension PhotoSection : AnimatableSectionModelType {
 
 
 class PhotoCell: UICollectionViewCell {
-	@IBOutlet var image: UIImage?
+	@IBOutlet weak var image: UIImageView!
 }
 
 class MainViewController: UIViewController, UICollectionViewDelegate {
@@ -78,18 +78,12 @@ class MainViewController: UIViewController, UICollectionViewDelegate {
 		}
 		
 		collectionDataSource.configureCell = { (ds, cv, ip, i) in
-			let cell = cv.dequeueReusableCell(withReuseIdentifier: "Cell", for: ip) as! PhotoCell
-			cell.image = ds[ip].image
+			let cell = cv.dequeueReusableCell(withReuseIdentifier: "PhotoCell", for: ip) as! PhotoCell
+			cell.image.image = ds[ip].image
 			return cell
         }
-	
-        Observable.from(viewModel!.assets!).subscribe{ event in
-                self.viewModel!.requestImage(PHAsset(), { (image) in
-                    self.photoItems.onNext(MAPhoto(image: image, id: event.element!?.localIdentifier, index: 0))
-                })
-        }.addDisposableTo(disposeBag)
 		
-		photoItems
+		photoItems.asObservable()
 			.reduce([MAPhoto]()) {acc, photo in
 				var newAcc = acc;
 				newAcc.append(photo)
@@ -98,10 +92,31 @@ class MainViewController: UIViewController, UICollectionViewDelegate {
 			.map { photos in
 				return [PhotoSection(header: "1", photos: photos, updated: Date.init())]
 			}
+			.observeOn(MainScheduler.instance)
 			.bindTo(collectionView.rx.items(dataSource: collectionDataSource))
 			.addDisposableTo(disposeBag)
+		
+        viewModel!.assets.subscribe{ event in
+			switch(event)
+			{
+				case .completed:
+					self.photoItems.onCompleted()
+					return
+				default: break
+			}
+			
+			let asset = event.element!
+			
+			self.viewModel!.requestImage(asset, { (image) in
+                    self.photoItems.onNext(MAPhoto(image: image, id: asset.localIdentifier, index: 0))
+			})
+			
+        }.addDisposableTo(disposeBag)
+		
+					//.bindTo(collectionView.rx.items(dataSource: collectionDataSource))
+			//.addDisposableTo(disposeBag)
 
-        collectionView.rx
+		collectionView.rx
             .setDelegate(self)
             .addDisposableTo(disposeBag)
 	}

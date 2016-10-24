@@ -19,7 +19,7 @@ class MainViewModel: MAViewModel {
 	var imageManager: PHCachingImageManager?
 	private var fetchResult: PHFetchResult<PHAsset>?
 	
-    var assets: [PHAsset?]?
+    let assets: PublishSubject<PHAsset> = PublishSubject<PHAsset>()
     private var photoCount = 0
     var count: Int {
         get {
@@ -29,7 +29,6 @@ class MainViewModel: MAViewModel {
 	
 	override init() {
 		super.init()
-	
 		
 		// Never load photos Unless the user allows to access to photo album
 		checkPhotoAuth({() -> Void in
@@ -39,15 +38,17 @@ class MainViewModel: MAViewModel {
 			options.sortDescriptors = [
 				NSSortDescriptor(key: "creationDate", ascending: false)
 			]
+			options.fetchLimit = 100
 			
 			self.fetchResult = PHAsset.fetchAssets(with: .image, options: options)
-            /*
-			Observable<Int>.generate(initialState: 0, condition: { i in i < self.fetchResult!.count }, iterate: { i in return i+1}).map({ i in
-				return MAPhoto(image: nil, id: nil, index: i)
-			}).bindTo(self.assets).addDisposableTo(self.disposeBag)
-			*/
 			
-            self.assets = Array(repeating: nil, count: self.fetchResult!.count)
+			let count = self.fetchResult!.count
+            self.fetchResult?.enumerateObjects({ (asset, idx, stop) in
+				self.assets.onNext(asset)
+				if (count == idx + 1) {
+					self.assets.onCompleted()
+				}
+			})
 			PHPhotoLibrary.shared().register(self)
         },{ () -> Void in
 				

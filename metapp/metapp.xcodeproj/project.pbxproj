@@ -650,11 +650,12 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CB06196085489379737F9BC3 /* Pods-metapp.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = BUQ778JG24;
 				INFOPLIST_FILE = metapp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.zoidsoft.metapp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zoid.metapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
@@ -664,11 +665,12 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 944CFB304737A1A877DF46CC /* Pods-metapp.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = BUQ778JG24;
 				INFOPLIST_FILE = metapp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.zoidsoft.metapp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zoid.metapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
