@@ -79,7 +79,11 @@ class MainViewController: UIViewController, UICollectionViewDelegate {
 		
 		collectionDataSource.configureCell = { (ds, cv, ip, i) in
 			let cell = cv.dequeueReusableCell(withReuseIdentifier: "PhotoCell", for: ip) as! PhotoCell
-			cell.image.image = ds[ip].image
+			let photoModel = ds[ip] 
+			self.viewModel!.requestImage(photoModel.asset!, { (image) in
+				print("loading photo " + photoModel.identity)
+				cell.image.image = image
+			})
 			return cell
         }
 		
@@ -106,10 +110,7 @@ class MainViewController: UIViewController, UICollectionViewDelegate {
 			}
 			
 			let asset = event.element!
-			
-			self.viewModel!.requestImage(asset, { (image) in
-                    self.photoItems.onNext(MAPhoto(image: image, id: asset.localIdentifier, index: 0))
-			})
+			self.photoItems.onNext(MAPhoto(image: nil, id: asset.localIdentifier, asset: asset))
 			
         }.addDisposableTo(disposeBag)
 		

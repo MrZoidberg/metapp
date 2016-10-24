@@ -8,14 +8,15 @@
 
 import Foundation
 import UIKit
+import Photos
 
 struct MAPhoto: Equatable {
 	var image: UIImage?
 	var id: AnyHashable?
-	let index: Int
+	var asset: PHAsset?
 }
 
 func == (lhs: MAPhoto, rhs: MAPhoto) -> Bool {
-	return lhs.id == rhs.id && lhs.index == rhs.index
+	return lhs.id == rhs.id
 }
 
