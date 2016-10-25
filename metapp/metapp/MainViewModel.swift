@@ -11,7 +11,7 @@ import RxSwift
 import Photos
 import Async
 
-class MainViewModel: MAViewModel {
+final class MainViewModel: MAViewModel {
 	// MARK: Properties
 	/// Scope dispose to avoid leaking
 	var disposeBag = DisposeBag()
@@ -20,6 +20,11 @@ class MainViewModel: MAViewModel {
 	private var fetchResult: PHFetchResult<PHAsset>?
 	
     let assets: PublishSubject<PHAsset> = PublishSubject<PHAsset>()
+    var imageSize: CGSize = CGSize.zero {
+        didSet {
+            self.imageManager?.stopCachingImagesForAllAssets()
+        }
+    }
 
 	override init() {
 		super.init()
@@ -66,14 +71,14 @@ class MainViewModel: MAViewModel {
 		}
 	}
 	
-	func requestImage(_ asset: PHAsset, _ size: CGSize, _ usingBlock: @escaping (UIImage) -> Void) {
+	func requestImage(_ asset: PHAsset, _ usingBlock: @escaping (UIImage) -> Void) {
 		let options = PHImageRequestOptions()
 		options.isNetworkAccessAllowed = true
 		options.isSynchronous = false
 		//options.deliveryMode = PHImageRequestOptionsDeliveryModeOpportunistic
 		
-		self.imageManager!.requestImage(for: asset,
-		                                        targetSize: size,
+		self.imageManager?.requestImage(for: asset,
+		                                        targetSize: self.imageSize,
 		                                        contentMode: .aspectFit,
 		                                        options: options) {
 													result, info in

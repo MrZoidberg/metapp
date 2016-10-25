@@ -57,7 +57,7 @@ class PhotoCell: UICollectionViewCell {
 	@IBOutlet weak var image: UIImageView!
 }
 
-class MainViewController: UIViewController, UICollectionViewDelegate {
+final class MainViewController: UIViewController, UICollectionViewDelegate {
 	
 	let disposeBag = DisposeBag()
 	
@@ -66,8 +66,6 @@ class MainViewController: UIViewController, UICollectionViewDelegate {
 	// MARK: Properties
 	var viewModel: MainViewModel?
     let photoItems: PublishSubject<MAPhoto> = PublishSubject<MAPhoto>()
-	
-	var collectionItemSize: CGSize?
     
 	@IBOutlet weak var collectionView: UICollectionView!
 	
@@ -79,21 +77,26 @@ class MainViewController: UIViewController, UICollectionViewDelegate {
 			return
 		}
 		
-		collectionItemSize = CGSize(width: 170, height: 170)
-		
-		
+        viewModel?.rx.observe(CGSize.self, "imageSize")
+            .subscribeOn(MainScheduler.instance)
+            .subscribe(onNext: { (size) in
+                if size != CGSize.zero {
+                    (self.collectionView.collectionViewLayout as? UICollectionViewFlowLayout)?.itemSize = size!
+                    self.collectionView.reloadData()
+                }
+            })
+            .addDisposableTo(disposeBag)
+        
 		collectionDataSource.configureCell = { (ds, cv, ip, i) in
 			let cell = cv.dequeueReusableCell(withReuseIdentifier: "PhotoCell", for: ip) as! PhotoCell
 			let photoModel = ds[ip]
-			self.viewModel!.requestImage(photoModel.asset!, self.collectionItemSize!, { (image) in
+			self.viewModel!.requestImage(photoModel.asset!, { (image) in
 				print("loading photo \(photoModel.identity) +  for \(ip.description)")
 				cell.image.image = image
 			})
 			return cell
         }
-		
-		(collectionView.collectionViewLayout as? UICollectionViewFlowLayout)?.itemSize = collectionItemSize!
-		
+    
 		collectionView.rx
 			.setDelegate(self)
 			.addDisposableTo(disposeBag)
@@ -126,9 +129,19 @@ class MainViewController: UIViewController, UICollectionViewDelegate {
         }.addDisposableTo(disposeBag)
 
 	}
+    
+    override func viewDidAppear(_ animated: Bool) {
+        viewModel?.imageSize = calcOptimalImageSize()
+    }
 
 	override func didReceiveMemoryWarning() {
 		super.didReceiveMemoryWarning()
 		// Dispose of any resources that can be recreated.
 	}
+    
+    func calcOptimalImageSize() -> CGSize {
+        let dimension: Double = Double(collectionView.bounds.width) / 2.0 - 5.0*2
+        print("collection view size is \(collectionView.bounds.debugDescription). Image size is \(dimension)")
+        return CGSize(width: dimension, height: dimension)
+    }
 }

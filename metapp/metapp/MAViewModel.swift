@@ -9,5 +9,5 @@
 import Foundation
 
 
-class MAViewModel: NSObject {
+open class MAViewModel: NSObject {
 }
