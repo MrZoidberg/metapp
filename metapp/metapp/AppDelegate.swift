@@ -9,21 +9,25 @@
 import UIKit
 import Swinject
 import SwinjectStoryboard
+import XCGLogger
 
 extension SwinjectStoryboard {
 	class func setup() {
 		
-		defaultContainer.registerForStoryboard(MainViewController.self) {r, c in
-			c.viewModel = MainViewModel()
+        defaultContainer.registerForStoryboard(MainViewController.self) {r, c in
+            c.viewModel = MainViewModel(photoRequestorFactory: { r.resolve(MAPhotoRequestor.self)! },
+                                        log: r.resolve(XCGLogger.self))
 		}
-		/*
-		defaultContainer.register(DataSource.self) { _ in RealmService() }
-		defaultContainer.register(Setting.self) { r in
-			let setting = Setting()
-			setting.dataSource = r.resolve(DataSource.self)
-			return setting
-		}
-		*/
+        
+        defaultContainer.register(XCGLogger.self) { _ in
+            let log = XCGLogger.default
+            log.setup(level: .debug, showThreadName: true, showLevel: true, showFileNames: true, showLineNumbers: true)
+            return log
+        }.inObjectScope(ObjectScope.container)
+        
+        defaultContainer.register(MAPhotoRequestor.self) {r in
+            MACachedPhotoRequestor(log: r.resolve(XCGLogger.self))
+        }.inObjectScope(ObjectScope.container)
 	}
 }
 

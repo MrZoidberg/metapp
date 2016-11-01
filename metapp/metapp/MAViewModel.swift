@@ -7,7 +7,12 @@
 //
 
 import Foundation
+import XCGLogger
 
-
-open class MAViewModel: NSObject {
+open class MAViewModel: NSObject, Loggable {
+    let log: XCGLogger?
+    
+    init (log: XCGLogger?) {
+        self.log = log
+    }
 }

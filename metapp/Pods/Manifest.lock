@@ -11,6 +11,9 @@ PODS:
   - Swinject (2.0.0-beta.2)
   - SwinjectStoryboard (1.0.0-beta.2):
     - Swinject (= 2.0.0-beta.2)
+  - XCGLogger (4.0.0):
+    - XCGLogger/Core (= 4.0.0)
+  - XCGLogger/Core (4.0.0)
 
 DEPENDENCIES:
   - AsyncSwift (from `https://github.com/duemunk/Async`)
@@ -21,6 +24,7 @@ DEPENDENCIES:
   - SnapKit (~> 3.0)
   - Swinject (= 2.0.0-beta.2)
   - SwinjectStoryboard (= 1.0.0-beta.2)
+  - XCGLogger (~> 4.0.0)
 
 EXTERNAL SOURCES:
   AsyncSwift:
@@ -45,7 +49,8 @@ SPEC CHECKSUMS:
   SnapKit: 2e456761aa92d4d4067a7a5594c18769d451a8ad
   Swinject: 69a893192efa9f2cc44be79ef423d04d571b6af9
   SwinjectStoryboard: b52b45821a50386ef604c3cd098f8029a50a268d
+  XCGLogger: 38063ea89b4c8b23232d18efd2e12eb0005f3ea4
 
-PODFILE CHECKSUM: 149e1464bc0df21694873cbc2e391336e6849c6d
+PODFILE CHECKSUM: e5d97b6e8facb97de9fc6b1dabd8c15b3884952f
 
 COCOAPODS: 1.1.0.rc.2

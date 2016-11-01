@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import Photos
+import RxDataSources
 
 struct MAPhoto: Equatable {
 	var image: UIImage?
@@ -18,5 +19,13 @@ struct MAPhoto: Equatable {
 
 func == (lhs: MAPhoto, rhs: MAPhoto) -> Bool {
 	return lhs.id == rhs.id
+}
+
+extension MAPhoto : IdentifiableType  {
+    typealias Identity = String
+    
+    var identity: String {
+        return id as! String
+    }
 }
 

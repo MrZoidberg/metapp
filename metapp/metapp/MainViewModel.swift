@@ -10,24 +10,32 @@ import Foundation
 import RxSwift
 import Photos
 import Async
+import XCGLogger
+
+typealias PhotoRequestorFactory = () -> MAPhotoRequestor
 
 final class MainViewModel: MAViewModel {
 	// MARK: Properties
 	/// Scope dispose to avoid leaking
 	var disposeBag = DisposeBag()
 	
-	var imageManager: PHCachingImageManager?
+    private var photoRequestorFactory: PhotoRequestorFactory?
+	private var imageManager: MAPhotoRequestor?
 	private var fetchResult: PHFetchResult<PHAsset>?
 	
     let assets: PublishSubject<PHAsset> = PublishSubject<PHAsset>()
-    var imageSize: CGSize = CGSize.zero {
-        didSet {
-            self.imageManager?.stopCachingImagesForAllAssets()
-        }
+    let imageSize: Variable<CGSize> = Variable(CGSize.zero)
+
+    func setImageSize(_ size: CGSize) {
+        imageSize.value = size;
+        imageManager?.stopCachingImagesForAllAssets()
     }
 
-	override init() {
-		super.init()
+    // MARK: Public methods
+    init(photoRequestorFactory: @escaping PhotoRequestorFactory, log: XCGLogger?) {
+		super.init(log: log)
+        
+        self.photoRequestorFactory = photoRequestorFactory
 		
 		// Never load photos Unless the user allows to access to photo album
 		checkPhotoAuth({() -> Void in
@@ -54,39 +62,32 @@ final class MainViewModel: MAViewModel {
 		})
 	}
 	
+    // MARK: Private methods
+    
 	// Check the status of authorization for PHPhotoLibrary
 	private func checkPhotoAuth(_ successBlock: @escaping () -> Void, _ deniedBlock: @escaping () -> Void) {
 		
-		PHPhotoLibrary.requestAuthorization { (status) -> Void in
+        log?.debug("Requesting access to PHPhotoLibrary")
+        
+		PHPhotoLibrary.requestAuthorization {[weak self] (status) -> Void in
 			switch status {
-			case .authorized:
-				self.imageManager = PHCachingImageManager()
-				successBlock()
-				
-			case .restricted, .denied:
-				deniedBlock()
-			default:
-				break
+                case .authorized:
+                    self?.log?.debug("Access to PHPhotoLibrary granted")
+                    self?.imageManager = self?.photoRequestorFactory!()
+                    successBlock()
+                    
+                case .restricted, .denied:
+                    self?.log?.debug("Access to PHPhotoLibrary denied")
+                    deniedBlock()
+                default:
+                    break
 			}
 		}
 	}
 	
 	func requestImage(_ asset: PHAsset, _ usingBlock: @escaping (UIImage) -> Void) {
-		let options = PHImageRequestOptions()
-		options.isNetworkAccessAllowed = true
-		options.isSynchronous = false
-		//options.deliveryMode = PHImageRequestOptionsDeliveryModeOpportunistic
-		
-		self.imageManager?.requestImage(for: asset,
-		                                        targetSize: self.imageSize,
-		                                        contentMode: .aspectFit,
-		                                        options: options) {
-													result, info in
-													
-			usingBlock(result!)
-		}
+        self.imageManager?.requestImage(asset, self.imageSize.value, usingBlock)
 	}
-
 }
 
 extension MainViewModel: PHPhotoLibraryChangeObserver

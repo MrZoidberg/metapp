@@ -9,8 +9,9 @@
 import UIKit
 import RxDataSources
 import RxSwift
-//import RxCocoa
+import RxCocoa
 import Photos
+import XCGLogger
 
 struct PhotoSection {
 	var header: String
@@ -23,14 +24,6 @@ struct PhotoSection {
 		self.header = header
 		self.photos = photos
 		self.updated = updated
-	}
-}
-
-extension MAPhoto : IdentifiableType  {
-	typealias Identity = String
-	
-	var identity: String {
-		return id as! String
 	}
 }
 
@@ -55,17 +48,18 @@ extension PhotoSection : AnimatableSectionModelType {
 
 class PhotoCell: UICollectionViewCell {
 	@IBOutlet weak var image: UIImageView!
+    var viewModel: MAPhoto?
 }
 
-final class MainViewController: UIViewController, UICollectionViewDelegate {
-	
-	let disposeBag = DisposeBag()
-	
-	let collectionDataSource = RxCollectionViewSectionedAnimatedDataSource<PhotoSection>()
+final class MainViewController: UIViewController, UICollectionViewDelegate, Loggable {
+		
+	private let collectionDataSource = RxCollectionViewSectionedAnimatedDataSource<PhotoSection>()
 	
 	// MARK: Properties
 	var viewModel: MainViewModel?
     let photoItems: PublishSubject<MAPhoto> = PublishSubject<MAPhoto>()
+    var log: XCGLogger?
+    let disposeBag = DisposeBag()
     
 	@IBOutlet weak var collectionView: UICollectionView!
 	
@@ -77,30 +71,36 @@ final class MainViewController: UIViewController, UICollectionViewDelegate {
 			return
 		}
 		
-        viewModel?.rx.observe(CGSize.self, "imageSize")
+        //bind imageSize from model to collectionView
+        viewModel?.imageSize
+            .asObservable()
             .subscribeOn(MainScheduler.instance)
-            .subscribe(onNext: { (size) in
+            .subscribe(onNext: {[unowned self] (size) in
                 if size != CGSize.zero {
-                    (self.collectionView.collectionViewLayout as? UICollectionViewFlowLayout)?.itemSize = size!
+                    (self.collectionView.collectionViewLayout as? UICollectionViewFlowLayout)?.itemSize = size
                     self.collectionView.reloadData()
                 }
             })
             .addDisposableTo(disposeBag)
         
-		collectionDataSource.configureCell = { (ds, cv, ip, i) in
+        //bind PhotoCell to data source
+		collectionDataSource.configureCell = {[unowned self] (ds, cv, ip, i) in
 			let cell = cv.dequeueReusableCell(withReuseIdentifier: "PhotoCell", for: ip) as! PhotoCell
-			let photoModel = ds[ip]
-			self.viewModel!.requestImage(photoModel.asset!, { (image) in
-				print("loading photo \(photoModel.identity) +  for \(ip.description)")
+            let photoModel: MAPhoto = ds[ip]
+            cell.viewModel = photoModel
+			self.viewModel!.requestImage(photoModel.asset!, {[weak self] (image) in
+				self?.log?.debug("loading photo \(photoModel.identity) +  for \(ip.description)")
 				cell.image.image = image
 			})
 			return cell
         }
     
+        //bind delegate to collectionView
 		collectionView.rx
 			.setDelegate(self)
 			.addDisposableTo(disposeBag)
 		
+        //bind photos to collectionView
 		photoItems.asObservable()
 			.reduce([MAPhoto]()) {acc, photo in
 				var newAcc = acc;
@@ -114,7 +114,8 @@ final class MainViewController: UIViewController, UICollectionViewDelegate {
 			.bindTo(collectionView.rx.items(dataSource: collectionDataSource))
 			.addDisposableTo(disposeBag)
 		
-        viewModel!.assets.subscribe{ event in
+        //bind assets to photos
+        viewModel!.assets.subscribe{[unowned self] event in
 			switch(event)
 			{
 				case .completed:
@@ -127,11 +128,12 @@ final class MainViewController: UIViewController, UICollectionViewDelegate {
 			self.photoItems.onNext(MAPhoto(image: nil, id: asset.localIdentifier, asset: asset))
 			
         }.addDisposableTo(disposeBag)
-
+        
+        registerForPreviewing(with: self, sourceView: collectionView)
 	}
     
     override func viewDidAppear(_ animated: Bool) {
-        viewModel?.imageSize = calcOptimalImageSize()
+        viewModel?.setImageSize(calcOptimalImageSize())
     }
 
 	override func didReceiveMemoryWarning() {
@@ -140,8 +142,33 @@ final class MainViewController: UIViewController, UICollectionViewDelegate {
 	}
     
     func calcOptimalImageSize() -> CGSize {
-        let dimension: Double = Double(collectionView.bounds.width) / 2.0 - 5.0*2
-        print("collection view size is \(collectionView.bounds.debugDescription). Image size is \(dimension)")
+        collectionView.collectionViewLayout.invalidateLayout()
+        let contentSize = collectionView.collectionViewLayout.collectionViewContentSize
+        let dimension: Double = Double(contentSize.width) / 2.0 - 5.0*2
+        self.log?.debug("collection view size is \(self.collectionView.bounds.debugDescription). Image size is \(dimension)")
         return CGSize(width: dimension, height: dimension)
+    }
+}
+
+extension MainViewController: UIViewControllerPreviewingDelegate {
+    // MARK: UIViewControllerPreviewingDelegate
+    
+    func previewingContext(_ previewingContext: UIViewControllerPreviewing,
+                        viewControllerForLocation location: CGPoint) -> UIViewController? {
+        guard let indexPath = collectionView.indexPathForItem(at: location), let cell = collectionView.cellForItem(at: indexPath) as? PhotoCell,
+            let photoModel = cell.viewModel else {
+            return nil
+        }
+        
+        
+        guard let peekPhotoViewController = storyboard?.instantiateViewController(withIdentifier: "PeekPhotoViewController") as? PeekPhotoViewController else { return nil }
+        
+        peekPhotoViewController.viewModel = photoModel
+        return peekPhotoViewController
+    }
+    
+    func previewingContext(_ previewingContext: UIViewControllerPreviewing,
+                           commit viewControllerToCommit: UIViewController) {
+        
     }
 }

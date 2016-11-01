@@ -19,6 +19,9 @@
 		3D6741B71D944FB90096074E /* MainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D6741B61D944FB90096074E /* MainViewModel.swift */; };
 		3D8E346C1D95711100B7D908 /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D8E346B1D95711100B7D908 /* Photos.framework */; };
 		3D8E346E1D95905A00B7D908 /* MAPhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D8E346D1D95905A00B7D908 /* MAPhoto.swift */; };
+		744EA7021DC93D45002CB64E /* MACachedPhotoRequestor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 744EA7011DC93D45002CB64E /* MACachedPhotoRequestor.swift */; };
+		744EA7041DC95714002CB64E /* Loggable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 744EA7031DC95714002CB64E /* Loggable.swift */; };
+		744EA7061DC95D62002CB64E /* PeekPhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 744EA7051DC95D62002CB64E /* PeekPhotoViewController.swift */; };
 		9A1379C957C50524F06846BE /* Pods_metapp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0EFDBDC378ECEF9AF1E51D09 /* Pods_metapp.framework */; };
 		CB4213DB24F74BF07A86885E /* Pods_metappUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9567B64D6F62E0F237A03410 /* Pods_metappUITests.framework */; };
 /* End PBXBuildFile section */
@@ -61,6 +64,9 @@
 		3D8E346B1D95711100B7D908 /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = System/Library/Frameworks/Photos.framework; sourceTree = SDKROOT; };
 		3D8E346D1D95905A00B7D908 /* MAPhoto.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MAPhoto.swift; sourceTree = "<group>"; };
 		66D1E1B1077A92B52CCF2F15 /* Pods-metappTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-metappTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-metappTests/Pods-metappTests.debug.xcconfig"; sourceTree = "<group>"; };
+		744EA7011DC93D45002CB64E /* MACachedPhotoRequestor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MACachedPhotoRequestor.swift; sourceTree = "<group>"; };
+		744EA7031DC95714002CB64E /* Loggable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Loggable.swift; sourceTree = "<group>"; };
+		744EA7051DC95D62002CB64E /* PeekPhotoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeekPhotoViewController.swift; sourceTree = "<group>"; };
 		753612C0A854E5FF339C0723 /* Pods-metappUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-metappUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-metappUITests/Pods-metappUITests.release.xcconfig"; sourceTree = "<group>"; };
 		8579D632628B9C951A46D257 /* Pods_metappTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_metappTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		89CDFB260B4653AE5035E9A9 /* Pods-metappTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-metappTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-metappTests/Pods-metappTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -130,6 +136,7 @@
 				3D6741821D943CC90096074E /* AppDelegate.swift */,
 				3D6741891D943CC90096074E /* Assets.xcassets */,
 				3D67418E1D943CC90096074E /* Info.plist */,
+				744EA7031DC95714002CB64E /* Loggable.swift */,
 			);
 			path = metapp;
 			sourceTree = "<group>";
@@ -156,6 +163,7 @@
 			isa = PBXGroup;
 			children = (
 				3D6741841D943CC90096074E /* MainViewController.swift */,
+				744EA7051DC95D62002CB64E /* PeekPhotoViewController.swift */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -172,6 +180,7 @@
 		3D6741B21D944AD40096074E /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				744EA7001DC93D06002CB64E /* Services */,
 				3D8E346D1D95905A00B7D908 /* MAPhoto.swift */,
 			);
 			name = Models;
@@ -184,6 +193,14 @@
 				3D67418B1D943CC90096074E /* LaunchScreen.storyboard */,
 			);
 			name = Views;
+			sourceTree = "<group>";
+		};
+		744EA7001DC93D06002CB64E /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				744EA7011DC93D45002CB64E /* MACachedPhotoRequestor.swift */,
+			);
+			name = Services;
 			sourceTree = "<group>";
 		};
 		76E18B1481909ADF82F2A854 /* Frameworks */ = {
@@ -282,7 +299,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0800;
-				LastUpgradeCheck = 0800;
+				LastUpgradeCheck = 0810;
 				ORGANIZATIONNAME = ZoidSoft;
 				TargetAttributes = {
 					3D67417E1D943CC80096074E = {
@@ -496,8 +513,11 @@
 			files = (
 				3D6741851D943CC90096074E /* MainViewController.swift in Sources */,
 				3D6741B51D944E6E0096074E /* MAViewModel.swift in Sources */,
+				744EA7041DC95714002CB64E /* Loggable.swift in Sources */,
 				3D6741831D943CC90096074E /* AppDelegate.swift in Sources */,
+				744EA7021DC93D45002CB64E /* MACachedPhotoRequestor.swift in Sources */,
 				3D6741B71D944FB90096074E /* MainViewModel.swift in Sources */,
+				744EA7061DC95D62002CB64E /* PeekPhotoViewController.swift in Sources */,
 				3D8E346E1D95905A00B7D908 /* MAPhoto.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -658,6 +678,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.zoid.metapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -673,6 +694,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.zoid.metapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
