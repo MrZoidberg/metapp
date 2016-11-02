@@ -42,6 +42,7 @@ final class MainViewModel: MAViewModel {
 			
 			// Sorting condition
 			let options = PHFetchOptions()
+            options.includeAllBurstAssets = true
 			options.sortDescriptors = [
 				NSSortDescriptor(key: "creationDate", ascending: false)
 			]
@@ -49,18 +50,23 @@ final class MainViewModel: MAViewModel {
 			
 			self.fetchResult = PHAsset.fetchAssets(with: .image, options: options)
 			
-			let count = self.fetchResult!.count
-            self.fetchResult?.enumerateObjects({ (asset, idx, stop) in
-				self.assets.onNext(asset)
-				if (count == idx + 1) {
-					self.assets.onCompleted()
-				}
-			})
+            let (_, time) = elapsedTime(self.fetchPhotos())
+            log?.debug("fetched photos in \(time/1000000) ms")
 			PHPhotoLibrary.shared().register(self)
         },{ () -> Void in
 				
 		})
 	}
+    
+    private func fetchPhotos() {
+        let count = self.fetchResult!.count
+        self.fetchResult?.enumerateObjects({ (asset, idx, stop) in
+            self.assets.onNext(asset)
+            if (count == idx + 1) {
+                self.assets.onCompleted()
+            }
+        })
+    }
 	
     // MARK: Private methods
     

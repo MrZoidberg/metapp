@@ -22,6 +22,9 @@
 		744EA7021DC93D45002CB64E /* MACachedPhotoRequestor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 744EA7011DC93D45002CB64E /* MACachedPhotoRequestor.swift */; };
 		744EA7041DC95714002CB64E /* Loggable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 744EA7031DC95714002CB64E /* Loggable.swift */; };
 		744EA7061DC95D62002CB64E /* PeekPhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 744EA7051DC95D62002CB64E /* PeekPhotoViewController.swift */; };
+		744EA7091DCA9059002CB64E /* MAMetadataAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 744EA7081DCA9059002CB64E /* MAMetadataAnalyzer.swift */; };
+		744EA70C1DCA90F5002CB64E /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 744EA70B1DCA90F5002CB64E /* Timer.swift */; };
+		744EA70E1DCA987C002CB64E /* Deque.swift in Sources */ = {isa = PBXBuildFile; fileRef = 744EA70D1DCA987C002CB64E /* Deque.swift */; };
 		9A1379C957C50524F06846BE /* Pods_metapp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0EFDBDC378ECEF9AF1E51D09 /* Pods_metapp.framework */; };
 		CB4213DB24F74BF07A86885E /* Pods_metappUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9567B64D6F62E0F237A03410 /* Pods_metappUITests.framework */; };
 /* End PBXBuildFile section */
@@ -67,6 +70,9 @@
 		744EA7011DC93D45002CB64E /* MACachedPhotoRequestor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MACachedPhotoRequestor.swift; sourceTree = "<group>"; };
 		744EA7031DC95714002CB64E /* Loggable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Loggable.swift; sourceTree = "<group>"; };
 		744EA7051DC95D62002CB64E /* PeekPhotoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeekPhotoViewController.swift; sourceTree = "<group>"; };
+		744EA7081DCA9059002CB64E /* MAMetadataAnalyzer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MAMetadataAnalyzer.swift; sourceTree = "<group>"; };
+		744EA70B1DCA90F5002CB64E /* Timer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Timer.swift; sourceTree = "<group>"; };
+		744EA70D1DCA987C002CB64E /* Deque.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Deque.swift; sourceTree = "<group>"; };
 		753612C0A854E5FF339C0723 /* Pods-metappUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-metappUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-metappUITests/Pods-metappUITests.release.xcconfig"; sourceTree = "<group>"; };
 		8579D632628B9C951A46D257 /* Pods_metappTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_metappTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		89CDFB260B4653AE5035E9A9 /* Pods-metappTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-metappTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-metappTests/Pods-metappTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -129,6 +135,8 @@
 		3D6741811D943CC90096074E /* metapp */ = {
 			isa = PBXGroup;
 			children = (
+				744EA7001DC93D06002CB64E /* Services */,
+				744EA70A1DCA90E1002CB64E /* Helpers */,
 				3D6741B31D944AD90096074E /* Views */,
 				3D6741B21D944AD40096074E /* Models */,
 				3D6741B11D944ACF0096074E /* ViewModels */,
@@ -180,7 +188,6 @@
 		3D6741B21D944AD40096074E /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				744EA7001DC93D06002CB64E /* Services */,
 				3D8E346D1D95905A00B7D908 /* MAPhoto.swift */,
 			);
 			name = Models;
@@ -199,8 +206,18 @@
 			isa = PBXGroup;
 			children = (
 				744EA7011DC93D45002CB64E /* MACachedPhotoRequestor.swift */,
+				744EA7081DCA9059002CB64E /* MAMetadataAnalyzer.swift */,
 			);
 			name = Services;
+			sourceTree = "<group>";
+		};
+		744EA70A1DCA90E1002CB64E /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				744EA70B1DCA90F5002CB64E /* Timer.swift */,
+				744EA70D1DCA987C002CB64E /* Deque.swift */,
+			);
+			name = Helpers;
 			sourceTree = "<group>";
 		};
 		76E18B1481909ADF82F2A854 /* Frameworks */ = {
@@ -306,6 +323,11 @@
 						CreatedOnToolsVersion = 8.0;
 						DevelopmentTeam = BUQ778JG24;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 0;
+							};
+						};
 					};
 					3D6741921D943CCA0096074E = {
 						CreatedOnToolsVersion = 8.0;
@@ -514,8 +536,11 @@
 				3D6741851D943CC90096074E /* MainViewController.swift in Sources */,
 				3D6741B51D944E6E0096074E /* MAViewModel.swift in Sources */,
 				744EA7041DC95714002CB64E /* Loggable.swift in Sources */,
+				744EA70C1DCA90F5002CB64E /* Timer.swift in Sources */,
 				3D6741831D943CC90096074E /* AppDelegate.swift in Sources */,
 				744EA7021DC93D45002CB64E /* MACachedPhotoRequestor.swift in Sources */,
+				744EA70E1DCA987C002CB64E /* Deque.swift in Sources */,
+				744EA7091DCA9059002CB64E /* MAMetadataAnalyzer.swift in Sources */,
 				3D6741B71D944FB90096074E /* MainViewModel.swift in Sources */,
 				744EA7061DC95D62002CB64E /* PeekPhotoViewController.swift in Sources */,
 				3D8E346E1D95905A00B7D908 /* MAPhoto.swift in Sources */,
