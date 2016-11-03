@@ -16,7 +16,7 @@ extension SwinjectStoryboard {
 		
         defaultContainer.registerForStoryboard(MainViewController.self) {r, c in
             c.viewModel = MainViewModel(photoRequestorFactory: { r.resolve(MAPhotoRequestor.self)! },
-                                        log: r.resolve(XCGLogger.self))
+                                        log: r.resolve(XCGLogger.self), r.resolve(MAMetadataAnalyzer.self))
 		}
         
         defaultContainer.register(XCGLogger.self) { _ in
@@ -28,6 +28,10 @@ extension SwinjectStoryboard {
         defaultContainer.register(MAPhotoRequestor.self) {r in
             MACachedPhotoRequestor(log: r.resolve(XCGLogger.self))
         }.inObjectScope(ObjectScope.container)
+		
+		defaultContainer.register(MAMetadataAnalyzer.self) {r in
+			MABgMetadataAnalyzer(log: r.resolve(XCGLogger.self))
+			}.inObjectScope(ObjectScope.container)
 	}
 }
 

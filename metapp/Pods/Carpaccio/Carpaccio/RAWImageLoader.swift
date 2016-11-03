@@ -28,7 +28,8 @@ public class RAWImageLoader: ImageLoaderProtocol
         case fullImageWhenThumbnailMissing
     }
     
-    public let imageURL: URL
+    public let imageURL: URL?
+	public let originalImageSource: CGImageSource?
     public let cachedImageURL: URL? = nil // For now, we don't implement a disk cache for images loaded by RAWImageLoader
     public let thumbnailScheme: ThumbnailScheme
     
@@ -44,14 +45,26 @@ public class RAWImageLoader: ImageLoaderProtocol
     public init(imageURL: URL, thumbnailScheme: ThumbnailScheme)
     {
         self.imageURL = imageURL
+		self.originalImageSource = nil
         self.thumbnailScheme = thumbnailScheme
     }
-    
+	
+	public init(imageSource: CGImageSource, thumbnailScheme: ThumbnailScheme)
+	{
+		self.imageURL = nil
+		self.originalImageSource = imageSource
+		self.thumbnailScheme = thumbnailScheme
+	}
+	
+	
     private var imageSource: CGImageSource?
     {
+		if originalImageSource != nil {
+			return originalImageSource
+		}
         // We intentionally don't store the image source, to not gob up resources, but rather open it anew each time
         let options = [String(kCGImageSourceShouldCache): false, String(kCGImageSourceShouldAllowFloat): true] as NSDictionary as CFDictionary
-        let imageSource = CGImageSourceCreateWithURL(imageURL as CFURL, options)
+        let imageSource = CGImageSourceCreateWithURL(imageURL as! CFURL, options)
         return imageSource
     }
     
@@ -252,7 +265,7 @@ public class RAWImageLoader: ImageLoaderProtocol
             return true
         }
         
-        print("---- All metadata for \(self.imageURL.path): ----")
+        print("---- All metadata for \(self.imageURL?.path): ----")
         
         for key in results.keys.sorted()
         {
@@ -273,7 +286,7 @@ public class RAWImageLoader: ImageLoaderProtocol
             handler(metadata)
         }
         else {
-            errorHandler(RAWImageLoaderError.failedToExtractImageMetadata(message: "Failed to read image properties for \(self.imageURL.path)"))
+            errorHandler(RAWImageLoaderError.failedToExtractImageMetadata(message: "Failed to read image properties for \(self.imageURL?.path)"))
         }
     }
     
@@ -335,7 +348,7 @@ public class RAWImageLoader: ImageLoaderProtocol
             handler(BitmapImageUtility.image(cgImage: thumbnailImage, size: CGSize.zero), self.imageMetadata!)
         }
         else {
-            errorHandler(RAWImageLoaderError.failedToLoadThumbnailImage(message: "Failed to load thumbnail image from \(self.imageURL.path)"))
+            errorHandler(RAWImageLoaderError.failedToLoadThumbnailImage(message: "Failed to load thumbnail image from \(self.imageURL?.path)"))
         }
     }
     
@@ -378,7 +391,7 @@ public class RAWImageLoader: ImageLoaderProtocol
                                   errorHandler: @escaping ImageLoadingErrorHandler)
     {
         guard let metadata = self.imageMetadata else {
-            errorHandler(RAWImageLoaderError.failedToExtractImageMetadata(message: "Failed to read properties of \(self.imageURL.path) to load full-size image")); return
+            errorHandler(RAWImageLoaderError.failedToExtractImageMetadata(message: "Failed to read properties of \(self.imageURL?.path) to load full-size image")); return
         }
         
         let scaleFactor: Double
@@ -394,7 +407,7 @@ public class RAWImageLoader: ImageLoaderProtocol
         }
         
         let fail = {
-            errorHandler(.failedToLoadFullSizeImage(message: "Failed to load full-size RAW image \(self.imageURL.path)"))
+            errorHandler(.failedToLoadFullSizeImage(message: "Failed to load full-size RAW image \(self.imageURL?.path)"))
         }
         
         guard let RAWFilter = CIFilter(imageURL: self.imageURL, options: nil) else {
@@ -433,7 +446,7 @@ public class RAWImageLoader: ImageLoaderProtocol
                 if #available(OSX 10.12, *)
                 {
                     // Pixel format and color space set as discussed around 21:50 in https://developer.apple.com/videos/play/wwdc2016/505/
-                    let context = RAWImageLoader.bakingContext(forImageURL: self.imageURL)
+                    let context = RAWImageLoader.bakingContext(forImageURL: self.imageURL!)
                     if let cgImage = context.createCGImage(image,
                         from: image.extent,
                         format: kCIFormatRGBA8,

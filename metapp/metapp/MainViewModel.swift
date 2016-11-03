@@ -22,6 +22,7 @@ final class MainViewModel: MAViewModel {
     private var photoRequestorFactory: PhotoRequestorFactory?
 	private var imageManager: MAPhotoRequestor?
 	private var fetchResult: PHFetchResult<PHAsset>?
+	private var analyzer: MAMetadataAnalyzer?
 	
     let assets: PublishSubject<PHAsset> = PublishSubject<PHAsset>()
     let imageSize: Variable<CGSize> = Variable(CGSize.zero)
@@ -32,10 +33,11 @@ final class MainViewModel: MAViewModel {
     }
 
     // MARK: Public methods
-    init(photoRequestorFactory: @escaping PhotoRequestorFactory, log: XCGLogger?) {
+	init(photoRequestorFactory: @escaping PhotoRequestorFactory, log: XCGLogger?, analyzer: MAMetadataAnalyzer) {
 		super.init(log: log)
         
         self.photoRequestorFactory = photoRequestorFactory
+		self.analyzer = analyzer
 		
 		// Never load photos Unless the user allows to access to photo album
 		checkPhotoAuth({() -> Void in
@@ -49,18 +51,19 @@ final class MainViewModel: MAViewModel {
 			//options.fetchLimit = 100
 			
 			self.fetchResult = PHAsset.fetchAssets(with: .image, options: options)
-			
-            let (_, time) = elapsedTime(self.fetchPhotos())
-            log?.debug("fetched photos in \(time/1000000) ms")
+            self.sendPhotosToAnalyzer()
 			PHPhotoLibrary.shared().register(self)
         },{ () -> Void in
 				
 		})
 	}
     
-    private func fetchPhotos() {
+    private func sendPhotosToAnalyzer() {
         let count = self.fetchResult!.count
         self.fetchResult?.enumerateObjects({ (asset, idx, stop) in
+			
+			self.analyzer?.analyzeImage(asset)
+			
             self.assets.onNext(asset)
             if (count == idx + 1) {
                 self.assets.onCompleted()
