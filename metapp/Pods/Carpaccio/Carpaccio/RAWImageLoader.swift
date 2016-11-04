@@ -244,6 +244,10 @@ public class RAWImageLoader: ImageLoaderProtocol
 			gpsMetadata = GpsMetadata(gpsVersion: gpsVersion, latitudeRef: latitudeRef, latitude: latitude, longtitudeRef: longtitudeRef, longtitude: longtitude, altitudeRef: altitudeRef, altitude: altitude, timestamp: gpsTimestamp, imgDirection: imgDirection)
         }
         
+        if (exifMetadata == nil || tiffMetadata == nil) {
+            return nil
+        }
+        
         let metadata = ImageMetadata(exif: exifMetadata!, tiff: tiffMetadata!)
         return metadata
     }()

@@ -31,6 +31,11 @@
                                 <rect key="frame" x="0.0" y="44" width="375" height="623"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <collectionViewLayout key="collectionViewLayout" id="2e6-R9-6RE" customClass="UICollectionViewFlowLayout"/>
+                                <progressView key="backgroundView" opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" fixedFrame="YES" id="QF4-Er-qPU">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="2"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <color key="progressTintColor" red="0.12134612327749328" green="1" blue="0.33084341852074117" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </progressView>
                                 <cells>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="PhotoCell" id="Frl-Sz-QTM" customClass="PhotoCell" customModule="metapp" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
@@ -70,6 +75,7 @@
                     </view>
                     <connections>
                         <outlet property="collectionView" destination="xn2-3B-boq" id="9g7-yD-19r"/>
+                        <outlet property="progressView" destination="QF4-Er-qPU" id="Dl9-zs-eVX"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

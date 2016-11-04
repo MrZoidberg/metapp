@@ -1,6 +1,10 @@
 PODS:
-  - AsyncSwift (2.0.0)
   - Carpaccio (0.0.5)
+  - Realm (2.0.3):
+    - Realm/Headers (= 2.0.3)
+  - Realm/Headers (2.0.3)
+  - RealmSwift (2.0.3):
+    - Realm (= 2.0.3)
   - RxCocoa (3.0.0):
     - RxSwift (~> 3.0)
   - RxDataSources (1.0.0):
@@ -16,8 +20,8 @@ PODS:
   - XCGLogger/Core (4.0.0)
 
 DEPENDENCIES:
-  - AsyncSwift (from `https://github.com/duemunk/Async`)
   - Carpaccio (from `https://github.com/MrZoidberg/Carpaccio.git`)
+  - RealmSwift
   - RxCocoa (~> 3.0.0)
   - RxDataSources (~> 1.0.0)
   - RxSwift (~> 3.0.0)
@@ -27,22 +31,18 @@ DEPENDENCIES:
   - XCGLogger (~> 4.0.0)
 
 EXTERNAL SOURCES:
-  AsyncSwift:
-    :git: https://github.com/duemunk/Async
   Carpaccio:
     :git: https://github.com/MrZoidberg/Carpaccio.git
 
 CHECKOUT OPTIONS:
-  AsyncSwift:
-    :commit: b7cde3366bbd8a22acdf8898af1a5a97292448f8
-    :git: https://github.com/duemunk/Async
   Carpaccio:
     :commit: b36d3270af28f32a14f1ce1880d63cb2138d9583
     :git: https://github.com/MrZoidberg/Carpaccio.git
 
 SPEC CHECKSUMS:
-  AsyncSwift: 6ba6ed9ecb51344458063f7c86fe447ab824e313
   Carpaccio: 24361e87bce73d05f914e45c4aa24e24b230cef5
+  Realm: 5f008bfe3c8c47142eddfc30b8c1584cde22db24
+  RealmSwift: 5afb451f65b682242f272dbb52d5c6f6e343c980
   RxCocoa: 0a2f3ae381cf16f4021a4cee7a4420f83058a965
   RxDataSources: 824693e84d00781d0a5e5cedc1ff95ce9250aacd
   RxSwift: a930cd662f5b4a7ca9dc3518585dba91dadf497c
@@ -51,6 +51,6 @@ SPEC CHECKSUMS:
   SwinjectStoryboard: b52b45821a50386ef604c3cd098f8029a50a268d
   XCGLogger: 38063ea89b4c8b23232d18efd2e12eb0005f3ea4
 
-PODFILE CHECKSUM: e5d97b6e8facb97de9fc6b1dabd8c15b3884952f
+PODFILE CHECKSUM: 105a2bdd9bbeee810edcc31cdd87dfcad4e572ce
 
 COCOAPODS: 1.1.0.rc.2

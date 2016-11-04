@@ -62,6 +62,7 @@ final class MainViewController: UIViewController, UICollectionViewDelegate, Logg
     let disposeBag = DisposeBag()
     
 	@IBOutlet weak var collectionView: UICollectionView!
+    @IBOutlet weak var progressView: UIProgressView!
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -83,6 +84,23 @@ final class MainViewController: UIViewController, UICollectionViewDelegate, Logg
             })
             .addDisposableTo(disposeBag)
         
+        //let a = progressView.rx.progress.asObserver()
+        
+        viewModel?.analyzerProgress?.map({ p in
+                return Float(p) / 100
+            })
+            .observeOn(MainScheduler.instance)
+            .bindTo(progressView.rx.progress)
+            .addDisposableTo(disposeBag)
+            
+            /*
+            
+            .asObservable().subscribeOn(MainScheduler.instance).subscribe(onNext: { (p) in
+            let progress = Float(p) / 100.0
+            self.progressView?.progress = progress
+        }, onError: nil, onCompleted: nil, onDisposed: nil)
+            .addDisposableTo(disposeBag)
+        */
         //bind PhotoCell to data source
 		collectionDataSource.configureCell = {[unowned self] (ds, cv, ip, i) in
 			let cell = cv.dequeueReusableCell(withReuseIdentifier: "PhotoCell", for: ip) as! PhotoCell
@@ -125,7 +143,7 @@ final class MainViewController: UIViewController, UICollectionViewDelegate, Logg
 			}
 			
 			let asset = event.element!
-			self.photoItems.onNext(MAPhoto(image: nil, id: asset.localIdentifier, asset: asset))
+			self.photoItems.onNext(MAPhoto(id: asset.localIdentifier, asset: asset))
 			
         }.addDisposableTo(disposeBag)
         

@@ -9,7 +9,6 @@
 import Foundation
 import RxSwift
 import Photos
-import Async
 import XCGLogger
 
 typealias PhotoRequestorFactory = () -> MAPhotoRequestor
@@ -26,6 +25,10 @@ final class MainViewModel: MAViewModel {
 	
     let assets: PublishSubject<PHAsset> = PublishSubject<PHAsset>()
     let imageSize: Variable<CGSize> = Variable(CGSize.zero)
+    
+    var analyzerProgress: BehaviorSubject<Int>? {
+        return analyzer?.progress
+    }
 
     func setImageSize(_ size: CGSize) {
         imageSize.value = size;
@@ -60,6 +63,12 @@ final class MainViewModel: MAViewModel {
     
     private func sendPhotosToAnalyzer() {
         let count = self.fetchResult!.count
+        guard let ar = self.fetchResult?.objects(at: IndexSet(0..<count)) else {
+            return
+        }
+        
+        self.analyzer?.analyzeImages(ar)
+        /*
         self.fetchResult?.enumerateObjects({ (asset, idx, stop) in
 			
 			self.analyzer?.analyzeImage(asset)
@@ -68,7 +77,7 @@ final class MainViewModel: MAViewModel {
             if (count == idx + 1) {
                 self.assets.onCompleted()
             }
-        })
+        })*/
     }
 	
     // MARK: Private methods

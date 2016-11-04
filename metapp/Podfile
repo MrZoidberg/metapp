@@ -13,9 +13,10 @@ target 'metapp' do
   pod 'SnapKit', '~> 3.0'
   pod 'Swinject', '2.0.0-beta.2'
   pod 'SwinjectStoryboard', '1.0.0-beta.2'
-  pod 'AsyncSwift', :git => 'https://github.com/duemunk/Async'
+  #pod 'AsyncSwift', :git => 'https://github.com/duemunk/Async'
   pod 'Carpaccio', :git => 'https://github.com/MrZoidberg/Carpaccio.git'
   pod 'XCGLogger', '~> 4.0.0'
+  pod 'RealmSwift'
 
   target 'metappTests' do
     inherit! :search_paths
@@ -26,5 +27,12 @@ target 'metapp' do
     inherit! :search_paths
     # Pods for testing
   end
+end
 
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    target.build_configurations.each do |config|
+      config.build_settings['SWIFT_VERSION'] = '3.0'
+    end
+  end
 end

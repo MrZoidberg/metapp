@@ -16,12 +16,22 @@ extension SwinjectStoryboard {
 		
         defaultContainer.registerForStoryboard(MainViewController.self) {r, c in
             c.viewModel = MainViewModel(photoRequestorFactory: { r.resolve(MAPhotoRequestor.self)! },
-                                        log: r.resolve(XCGLogger.self), r.resolve(MAMetadataAnalyzer.self))
+                                        log: r.resolve(XCGLogger.self), analyzer: r.resolve(MAMetadataAnalyzer.self)!)
 		}
         
         defaultContainer.register(XCGLogger.self) { _ in
             let log = XCGLogger.default
             log.setup(level: .debug, showThreadName: true, showLevel: true, showFileNames: true, showLineNumbers: true)
+            
+            let emojiLogFormatter = PrePostFixLogFormatter()
+            emojiLogFormatter.apply(prefix: "🗯", postfix: "", to: .verbose)
+            emojiLogFormatter.apply(prefix: "🔹", postfix: "", to: .debug)
+            emojiLogFormatter.apply(prefix: "ℹ️", postfix: "", to: .info)
+            emojiLogFormatter.apply(prefix: "⚠️", postfix: "", to: .warning)
+            emojiLogFormatter.apply(prefix: "‼️", postfix: "", to: .error)
+            emojiLogFormatter.apply(prefix: "💣", postfix: "", to: .severe)
+            log.formatters = [emojiLogFormatter]
+
             return log
         }.inObjectScope(ObjectScope.container)
         
