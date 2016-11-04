@@ -1,6 +1,6 @@
 {
   "name": "Carpaccio",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "summary": "A pure Swift library for decoding image data and EXIF metadata (including RAW files).",
   "description": "Carpaccio is a Swift library that allows decoding image data from file formats supported by CoreImage (including all the various RAW file formats supported by CoreImage). It is built for efficient use of multiple CPU cores.",
   "homepage": "https://github.com/MrZoidberg/Carpaccio",
@@ -13,7 +13,7 @@
   },
   "source": {
     "git": "https://github.com/MrZoidberg/Carpaccio.git",
-    "tag": "0.0.3"
+    "tag": "0.0.6"
   },
   "module_name": "Carpaccio",
   "ios": {

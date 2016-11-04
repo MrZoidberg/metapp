@@ -31,7 +31,7 @@ public struct FullSizedImageLoadingOptions {
 
 public protocol ImageLoaderProtocol
 {
-    var imageURL: URL? { get }
+    var imageURL: URL { get }
     var imageMetadata: ImageMetadata? { get }
     
     /** *If*, in addition to `imageURL`, full image image data happens to have been copied into a disk cache location, a direct URL pointing to that location. */

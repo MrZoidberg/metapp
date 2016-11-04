@@ -1,5 +1,5 @@
 PODS:
-  - Carpaccio (0.0.5)
+  - Carpaccio (0.0.6)
   - Realm (2.0.3):
     - Realm/Headers (= 2.0.3)
   - Realm/Headers (2.0.3)
@@ -20,7 +20,7 @@ PODS:
   - XCGLogger/Core (4.0.0)
 
 DEPENDENCIES:
-  - Carpaccio (from `https://github.com/MrZoidberg/Carpaccio.git`)
+  - Carpaccio (from `https://github.com/MrZoidberg/Carpaccio`, branch `master`)
   - RealmSwift
   - RxCocoa (~> 3.0.0)
   - RxDataSources (~> 1.0.0)
@@ -32,15 +32,16 @@ DEPENDENCIES:
 
 EXTERNAL SOURCES:
   Carpaccio:
-    :git: https://github.com/MrZoidberg/Carpaccio.git
+    :branch: master
+    :git: https://github.com/MrZoidberg/Carpaccio
 
 CHECKOUT OPTIONS:
   Carpaccio:
-    :commit: b36d3270af28f32a14f1ce1880d63cb2138d9583
-    :git: https://github.com/MrZoidberg/Carpaccio.git
+    :commit: c22d9ac70fd98594678d6908ade19b2836bf5186
+    :git: https://github.com/MrZoidberg/Carpaccio
 
 SPEC CHECKSUMS:
-  Carpaccio: 24361e87bce73d05f914e45c4aa24e24b230cef5
+  Carpaccio: c474115f417589be0c3ceb831d484e66bd843f20
   Realm: 5f008bfe3c8c47142eddfc30b8c1584cde22db24
   RealmSwift: 5afb451f65b682242f272dbb52d5c6f6e343c980
   RxCocoa: 0a2f3ae381cf16f4021a4cee7a4420f83058a965
@@ -51,6 +52,6 @@ SPEC CHECKSUMS:
   SwinjectStoryboard: b52b45821a50386ef604c3cd098f8029a50a268d
   XCGLogger: 38063ea89b4c8b23232d18efd2e12eb0005f3ea4
 
-PODFILE CHECKSUM: 105a2bdd9bbeee810edcc31cdd87dfcad4e572ce
+PODFILE CHECKSUM: 705b475e70660870c253a92548001de272c523a7
 
-COCOAPODS: 1.1.0.rc.2
+COCOAPODS: 1.1.1

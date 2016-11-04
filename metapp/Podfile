@@ -14,7 +14,7 @@ target 'metapp' do
   pod 'Swinject', '2.0.0-beta.2'
   pod 'SwinjectStoryboard', '1.0.0-beta.2'
   #pod 'AsyncSwift', :git => 'https://github.com/duemunk/Async'
-  pod 'Carpaccio', :git => 'https://github.com/MrZoidberg/Carpaccio.git'
+  pod 'Carpaccio', :git => 'https://github.com/MrZoidberg/Carpaccio', :branch => 'master' 
   pod 'XCGLogger', '~> 4.0.0'
   pod 'RealmSwift'
 

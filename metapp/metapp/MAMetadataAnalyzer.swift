@@ -20,6 +20,8 @@ protocol MAMetadataAnalyzer {
     func cancel()
 }
 
+typealias ImageMetadataLoaderFactory = () -> ImageMetadataLoader
+
 final class MABgMetadataAnalyzer: MAMetadataAnalyzer {
     private var totalItems: Int = 0
     private var processedItems: Int = 0
@@ -29,12 +31,14 @@ final class MABgMetadataAnalyzer: MAMetadataAnalyzer {
     private let queue: PublishSubject<PHAsset> = PublishSubject<PHAsset>()
     private let imageManager: PHImageManager = PHImageManager()
 	private let log: XCGLogger?
+	private let imageMetadataLoaderFactory: ImageMetadataLoaderFactory
     
     let disposeBag: DisposeBag = DisposeBag()
     
-    init(log: XCGLogger?) {
+	init(imageMetadataLoader: ImageMetadataLoaderFactory, log: XCGLogger?) {
 		self.log = log
-		
+		self.imageMetadataLoaderFactory = imageMetadataLoader
+			
         queue.observeOn(ConcurrentDispatchQueueScheduler.init(queue: DispatchQueue.global(qos: DispatchQoS.QoSClass.background)))
 			.subscribe(onNext: self.onNextImage, onError: nil, onCompleted: nil, onDisposed: nil)
 			.addDisposableTo(disposeBag)

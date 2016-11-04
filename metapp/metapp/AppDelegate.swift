@@ -15,8 +15,8 @@ extension SwinjectStoryboard {
 	class func setup() {
 		
         defaultContainer.registerForStoryboard(MainViewController.self) {r, c in
-            c.viewModel = MainViewModel(photoRequestorFactory: { r.resolve(MAPhotoRequestor.self)! },
-                                        log: r.resolve(XCGLogger.self), analyzer: r.resolve(MAMetadataAnalyzer.self)!)
+            //c.viewModel = MainViewModel(photoRequestorFactory: { r.resolve(MAPhotoRequestor.self)! },
+            //                            log: r.resolve(XCGLogger.self), analyzer: r.resolve(MAMetadataAnalyzer.self)!)
 		}
         
         defaultContainer.register(XCGLogger.self) { _ in
@@ -39,8 +39,12 @@ extension SwinjectStoryboard {
             MACachedPhotoRequestor(log: r.resolve(XCGLogger.self))
         }.inObjectScope(ObjectScope.container)
 		
+		defaultContainer.register(ImageMetadataLoader.self) {r in
+			RAWImageMetadataLoader()
+			}
+		
 		defaultContainer.register(MAMetadataAnalyzer.self) {r in
-			MABgMetadataAnalyzer(log: r.resolve(XCGLogger.self))
+			MABgMetadataAnalyzer(photoRequestorFactory: { r.resolve(ImageMetadataLoader.self)!}, log: r.resolve(XCGLogger.self))
 			}.inObjectScope(ObjectScope.container)
 	}
 }
