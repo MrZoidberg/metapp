@@ -27,15 +27,17 @@
                                     <constraint firstAttribute="height" constant="44" id="GZS-rA-2zd"/>
                                 </constraints>
                             </navigationBar>
+                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="QF4-Er-qPU">
+                                <rect key="frame" x="0.0" y="44" width="375" height="2"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="2" id="jp9-SO-5op"/>
+                                </constraints>
+                                <color key="progressTintColor" red="0.12134612327749328" green="1" blue="0.33084341852074117" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </progressView>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="xn2-3B-boq">
-                                <rect key="frame" x="0.0" y="44" width="375" height="623"/>
+                                <rect key="frame" x="0.0" y="45" width="375" height="622"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <collectionViewLayout key="collectionViewLayout" id="2e6-R9-6RE" customClass="UICollectionViewFlowLayout"/>
-                                <progressView key="backgroundView" opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" fixedFrame="YES" id="QF4-Er-qPU">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="2"/>
-                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                    <color key="progressTintColor" red="0.12134612327749328" green="1" blue="0.33084341852074117" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                </progressView>
                                 <cells>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="PhotoCell" id="Frl-Sz-QTM" customClass="PhotoCell" customModule="metapp" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
@@ -60,15 +62,21 @@
                                         </connections>
                                     </collectionViewCell>
                                 </cells>
+                                <connections>
+                                    <outlet property="dataSource" destination="BYZ-38-t0r" id="JBi-2e-zGG"/>
+                                </connections>
                             </collectionView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="QF4-Er-qPU" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="0LS-Gy-QP2"/>
                             <constraint firstAttribute="trailing" secondItem="xn2-3B-boq" secondAttribute="trailing" id="5Sa-45-W6B"/>
                             <constraint firstAttribute="trailing" secondItem="xCc-Xn-BS9" secondAttribute="trailing" id="FA3-rU-DZ2"/>
                             <constraint firstItem="xCc-Xn-BS9" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="Ktf-TQ-uAg"/>
+                            <constraint firstAttribute="trailing" secondItem="QF4-Er-qPU" secondAttribute="trailing" id="XsL-T2-dok"/>
                             <constraint firstItem="xCc-Xn-BS9" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="gpk-wu-ZtR"/>
-                            <constraint firstItem="xn2-3B-boq" firstAttribute="top" secondItem="xCc-Xn-BS9" secondAttribute="bottom" id="nge-JL-wCN"/>
+                            <constraint firstItem="QF4-Er-qPU" firstAttribute="top" secondItem="xCc-Xn-BS9" secondAttribute="bottom" id="iVO-pO-sdJ"/>
+                            <constraint firstItem="xn2-3B-boq" firstAttribute="top" secondItem="xCc-Xn-BS9" secondAttribute="bottom" constant="1" id="nge-JL-wCN"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="xn2-3B-boq" secondAttribute="bottom" id="nhU-c3-NEJ"/>
                             <constraint firstItem="xn2-3B-boq" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="uHa-mA-9fR"/>
                         </constraints>

@@ -8,8 +8,11 @@
 
 import Foundation
 import RxSwift
+import RxCocoa
 import Photos
 import XCGLogger
+import RealmSwift
+import RxRealm
 
 typealias PhotoRequestorFactory = () -> MAPhotoRequestor
 
@@ -22,8 +25,10 @@ final class MainViewModel: MAViewModel {
 	private var imageManager: MAPhotoRequestor?
 	private var fetchResult: PHFetchResult<PHAsset>?
 	private var analyzer: MAMetadataAnalyzer?
-	
-    let assets: PublishSubject<PHAsset> = PublishSubject<PHAsset>()
+    private var realm: Realm?
+    
+    var photoSource: Results<MAPhoto>!
+    //var photos: Observable<(Results<MAPhoto>, RealmChangeset?)>?
     let imageSize: Variable<CGSize> = Variable(CGSize.zero)
     
     var analyzerProgress: BehaviorSubject<Int>? {
@@ -36,12 +41,16 @@ final class MainViewModel: MAViewModel {
     }
 
     // MARK: Public methods
-	init(photoRequestorFactory: @escaping PhotoRequestorFactory, log: XCGLogger?, analyzer: MAMetadataAnalyzer) {
+    init(photoRequestorFactory: @escaping PhotoRequestorFactory, analyzer: MAMetadataAnalyzer, realm: Realm, log: XCGLogger?) {
 		super.init(log: log)
         
         self.photoRequestorFactory = photoRequestorFactory
 		self.analyzer = analyzer
-		
+        self.realm = realm
+        
+        self.photoSource = realm.objects(MAPhoto.self).sorted(byProperty: "modificationDate", ascending: false)
+        //self.photos = Observable.changesetFrom(photoSource)
+    
 		// Never load photos Unless the user allows to access to photo album
 		checkPhotoAuth({() -> Void in
 			
@@ -68,16 +77,6 @@ final class MainViewModel: MAViewModel {
         }
         
         self.analyzer?.analyzeImages(ar)
-        /*
-        self.fetchResult?.enumerateObjects({ (asset, idx, stop) in
-			
-			self.analyzer?.analyzeImage(asset)
-			
-            self.assets.onNext(asset)
-            if (count == idx + 1) {
-                self.assets.onCompleted()
-            }
-        })*/
     }
 	
     // MARK: Private methods
@@ -103,8 +102,8 @@ final class MainViewModel: MAViewModel {
 		}
 	}
 	
-	func requestImage(_ asset: PHAsset, _ usingBlock: @escaping (UIImage) -> Void) {
-        self.imageManager?.requestImage(asset, self.imageSize.value, usingBlock)
+	func requestImage(_ imageId: String, _ usingBlock: @escaping (UIImage) -> Void) {
+        self.imageManager?.requestImage(imageId, self.imageSize.value, usingBlock)
 	}
 }
 

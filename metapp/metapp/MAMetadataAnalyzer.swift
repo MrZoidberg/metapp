@@ -12,6 +12,7 @@ import RxSwift
 import RxCocoa
 import Carpaccio
 import XCGLogger
+import RealmSwift
 
 protocol MAMetadataAnalyzer {
     var progress: BehaviorSubject<Int> {get}
@@ -32,12 +33,15 @@ final class MABgMetadataAnalyzer: MAMetadataAnalyzer {
     private let imageManager: PHImageManager = PHImageManager()
 	private let log: XCGLogger?
 	private let imageMetadataLoaderFactory: ImageMetadataLoaderFactory
+    private let realm: RealmFactory
     
     let disposeBag: DisposeBag = DisposeBag()
     
-	init(imageMetadataLoader: ImageMetadataLoaderFactory, log: XCGLogger?) {
+    public init(imageMetadataLoaderFactory: @escaping ImageMetadataLoaderFactory, realm: @escaping RealmFactory, log: XCGLogger?) {
+        
 		self.log = log
-		self.imageMetadataLoaderFactory = imageMetadataLoader
+		self.imageMetadataLoaderFactory = imageMetadataLoaderFactory
+        self.realm = realm
 			
         queue.observeOn(ConcurrentDispatchQueueScheduler.init(queue: DispatchQueue.global(qos: DispatchQoS.QoSClass.background)))
 			.subscribe(onNext: self.onNextImage, onError: nil, onCompleted: nil, onDisposed: nil)
@@ -67,29 +71,56 @@ final class MABgMetadataAnalyzer: MAMetadataAnalyzer {
 		
 		//log?.debug("Requesting image for asset id: \(image.localIdentifier)")
         
-        let start = DispatchTime.now() 
-		
+        let start = DispatchTime.now()
+        
+        let realm = self.realm()
+        
+        var photo = realm.object(ofType: MAPhoto.self, forPrimaryKey: image.localIdentifier)
+        
 		imageManager.requestImageData(for: image, options: options) { imageData, dataUTI, orientation, info in
 			guard let imageNsData = imageData as NSData?, let dataPtr = CFDataCreate(kCFAllocatorDefault, imageNsData.bytes.assumingMemoryBound(to: UInt8.self), imageNsData.length), let imageSourceData = CGImageSourceCreateWithData(dataPtr, nil) else {
-                self.processedItems += 1
                 self.reportProgress(start)
 				return
 			}
             
-            let converter = RAWImageLoader(imageSource: imageSourceData, thumbnailScheme: .fullImageWhenThumbnailMissing)
-            converter.loadImageMetadata({ metadata in
-                
-            }, errorHandler: {error in
-                self.log?.error("Cannot get image metadata from \(image.localIdentifier): \(error)")
-            })
+            let converter = self.imageMetadataLoaderFactory()
+            var metadataStruct: ImageMetadata? = nil
+            do {
+                try metadataStruct = converter.loadImageMetadata(imageSource: imageSourceData)
+            } catch ImageMetadataLoadError.imageUrlIsInvalid {
+                //TODO: log error
+            } catch ImageMetadataLoadError.cannotFindImageProperties {
+                //TODO: log error
+            } catch {
+                //TODO: log error
+            }
             
-            self.processedItems += 1
+            if metadataStruct == nil {
+                self.reportProgress(start)
+                return
+            }
+            
+            let metadata = MAImageMetadata(metadataStruct!)
+            
+            if photo == nil {
+                photo = MAPhoto(id: image.localIdentifier, asset: image, metadata: metadata)
+                try! realm.write {
+                    realm.add(photo!)
+                }
+            } else {
+                realm.beginWrite()
+                photo?.modificationDate = image.modificationDate as NSDate?
+                photo?.metadata = metadata
+                try! realm.commitWrite()
+            }
+            
             let end = DispatchTime.now()
             self.reportProgress(start, end)
 		}
 	}
     
-    private func reportProgress(_ jobStartTime: DispatchTime, _ jobEndTime: DispatchTime? = nil) {
+    private func reportProgress(_ jobStartTime: DispatchTime, _ jobEndTime: DispatchTime? = nil, error: Error? = nil) {
+        self.processedItems += 1
         progress.onNext(processedItems * 100 / totalItems)
         
         if (jobEndTime != nil) {
@@ -100,7 +131,7 @@ final class MABgMetadataAnalyzer: MAMetadataAnalyzer {
             log?.debug("processed \(self.processedItems) of \(self.totalItems) items. item time: \(timeInterval) ms. Total time: \(self.totalTime)")
 
         } else {
-            log?.debug("processed \(self.processedItems) of \(self.totalItems) items. item didn't succeed")
+            log?.debug("processed \(self.processedItems) of \(self.totalItems) items. item didn't succeed. Error: \(error?.localizedDescription)")
         }
         
     }

@@ -11,7 +11,7 @@ import Photos
 import XCGLogger
 
 protocol MAPhotoRequestor {
-    func requestImage(_ asset: PHAsset, _ imageSize: CGSize, _ usingBlock: @escaping (UIImage) -> Void)
+    func requestImage(_ imageId: String, _ imageSize: CGSize, _ usingBlock: @escaping (UIImage) -> Void)
     func stopCachingImagesForAllAssets()
 }
 
@@ -23,12 +23,21 @@ final class MACachedPhotoRequestor: PHCachingImageManager, MAPhotoRequestor {
         self.log = log
     }
     
-    func requestImage(_ asset: PHAsset, _ imageSize: CGSize, _ usingBlock: @escaping (UIImage) -> Void) {
+    func requestImage(_ imageId: String, _ imageSize: CGSize, _ usingBlock: @escaping (UIImage) -> Void) {
         let options = PHImageRequestOptions()
         options.isNetworkAccessAllowed = true
         options.isSynchronous = false
+        options.deliveryMode = .fastFormat
         
-        log?.debug("Requesting image for asset id: \(asset.localIdentifier)")
+        let fetchOptions = PHFetchOptions()
+        fetchOptions.wantsIncrementalChangeDetails = false
+        
+        log?.debug("Requesting image for asset id: \(imageId)")
+        
+        let fetchResults = PHAsset.fetchAssets(withLocalIdentifiers: [imageId], options: fetchOptions)
+        guard let asset = fetchResults.firstObject else {
+            return
+        }
         
         self.requestImage(for: asset, targetSize: imageSize, contentMode: .aspectFit, options: options)
         { result, info in

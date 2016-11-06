@@ -8,27 +8,59 @@
 
 import Foundation
 import RealmSwift
-
+import Carpaccio
 
 class MAImageMetadata: Object {
 	dynamic var exifMetadata: MAExifMetadata?
+    
+    convenience init(_ metadata: ImageMetadata) {
+        self.init()
+        
+        exifMetadata = MAExifMetadata(metadata.exif)
+    }
 }
 
-class Size {
+class Size: Object {
 	public let width: RealmOptional<Double> = RealmOptional<Double>()
 	public let height: RealmOptional<Double> = RealmOptional<Double>()
 	
-	required init() {
-		
-	}
 	
-	optional init(_ size: CGSize) {
-		width.value = Double(size.width)
-		height.value = Double(szie.height)
+    convenience init(_ size: CGSize) {
+        self.init()
+        
+		self.width.value = Double(size.width)
+		self.height.value = Double(size.height)
 	}
 }
 
-class MAExifMetadata
+class SubjectAreaItem: Object {
+    public let coordinate: RealmOptional<Double> = RealmOptional<Double>()
+    
+    convenience init(_ value: Double) {
+        self.init()
+        
+        self.coordinate.value = value
+    }
+}
+
+class SubjectArea: Object {
+    
+    public let coordinates: List<SubjectAreaItem> = List<SubjectAreaItem>()
+    
+    convenience init(_ coordsArray: [Double]?) {
+        self.init()
+        
+        guard let array = coordsArray else {
+            return
+        }
+        
+        for coordinateValue in array {
+            coordinates.append(SubjectAreaItem(coordinateValue))
+        }
+    }
+}
+
+class MAExifMetadata: Object
 {
 	public dynamic var imageId: String?
 	public dynamic var bodySerialNumber: String?
@@ -45,10 +77,48 @@ class MAExifMetadata
 	public let shutterSpeed: RealmOptional<Double> = RealmOptional<Double>()
 	public dynamic var nativeSize: Size?
 	
-	public let originalTimestamp: Date?
-	public let digitizedTimestamp: Date?
+	public dynamic var originalTimestamp: NSDate? = nil
+	public dynamic var digitizedTimestamp: NSDate? = nil
 	
-	public let subjectDistance: Double?
-	public let subjectArea: [Double]?
-	public let flashMode: FlashMode?
+	public let subjectDistance: RealmOptional<Double> = RealmOptional<Double>()
+    public dynamic var subjectArea: SubjectArea?
+    public let flashModeRawValue = RealmOptional<Int>()
+    
+	public var flashMode: FlashMode?
+    {
+        get {
+            return flashModeRawValue.value == nil ? nil : FlashMode(rawValue: flashModeRawValue.value!)
+        }
+        set {
+            flashModeRawValue.value = newValue?.rawValue
+        }
+    }
+    
+    
+    override class func primaryKey() -> String {
+        return "imageId"
+    }
+    
+    convenience init(_ exif: ExifMetadata) {
+        self.init()
+        
+        imageId = exif.imageId
+        bodySerialNumber = exif.bodySerialNumber
+        lensSpecification = exif.lensSpecification
+        lensMake = exif.lensMake
+        lensModel = exif.lensModel
+        lensSerialNumber = exif.lensSerialNumber
+        colorSpace = exif.colorSpace?.name as? String
+        fNumber.value = exif.fNumber
+        focalLength.value = exif.focalLength
+        focalLength35mmEquivalent.value = exif.focalLength35mmEquivalent
+        iso.value = exif.iso
+        shutterSpeed.value = exif.shutterSpeed
+        nativeSize = Size(exif.nativeSize)
+        originalTimestamp = exif.originalTimestamp as NSDate?
+        digitizedTimestamp = exif.digitizedTimestamp as NSDate?
+        subjectDistance.value = exif.subjectDistance
+        subjectArea = exif.subjectArea == nil ? nil : SubjectArea(exif.subjectArea)
+        flashMode = exif.flashMode
+    }
 }

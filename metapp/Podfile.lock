@@ -10,6 +10,9 @@ PODS:
   - RxDataSources (1.0.0):
     - RxCocoa (~> 3.0)
     - RxSwift (~> 3.0)
+  - RxRealm (0.3.1):
+    - RealmSwift (~> 2.0)
+    - RxSwift (~> 3.0.0)
   - RxSwift (3.0.0)
   - SnapKit (3.0.2)
   - Swinject (2.0.0-beta.2)
@@ -24,6 +27,7 @@ DEPENDENCIES:
   - RealmSwift
   - RxCocoa (~> 3.0.0)
   - RxDataSources (~> 1.0.0)
+  - RxRealm
   - RxSwift (~> 3.0.0)
   - SnapKit (~> 3.0)
   - Swinject (= 2.0.0-beta.2)
@@ -37,7 +41,7 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   Carpaccio:
-    :commit: c22d9ac70fd98594678d6908ade19b2836bf5186
+    :commit: 49302f5b4e5c017e12d29aa398e4906005d4a879
     :git: https://github.com/MrZoidberg/Carpaccio
 
 SPEC CHECKSUMS:
@@ -46,12 +50,13 @@ SPEC CHECKSUMS:
   RealmSwift: 5afb451f65b682242f272dbb52d5c6f6e343c980
   RxCocoa: 0a2f3ae381cf16f4021a4cee7a4420f83058a965
   RxDataSources: 824693e84d00781d0a5e5cedc1ff95ce9250aacd
+  RxRealm: '0965e07d49b8575d16c3a0487c667dfe64ce6a9c'
   RxSwift: a930cd662f5b4a7ca9dc3518585dba91dadf497c
   SnapKit: 2e456761aa92d4d4067a7a5594c18769d451a8ad
   Swinject: 69a893192efa9f2cc44be79ef423d04d571b6af9
   SwinjectStoryboard: b52b45821a50386ef604c3cd098f8029a50a268d
   XCGLogger: 38063ea89b4c8b23232d18efd2e12eb0005f3ea4
 
-PODFILE CHECKSUM: 705b475e70660870c253a92548001de272c523a7
+PODFILE CHECKSUM: 70445eb7c536f15f7e13f321b64a23b80948e0bb
 
-COCOAPODS: 1.1.1
+COCOAPODS: 1.1.0.rc.2

@@ -10,13 +10,20 @@ import UIKit
 import Swinject
 import SwinjectStoryboard
 import XCGLogger
+import Carpaccio
+import RealmSwift
+
+typealias RealmFactory = () -> Realm
 
 extension SwinjectStoryboard {
 	class func setup() {
 		
         defaultContainer.registerForStoryboard(MainViewController.self) {r, c in
-            //c.viewModel = MainViewModel(photoRequestorFactory: { r.resolve(MAPhotoRequestor.self)! },
-            //                            log: r.resolve(XCGLogger.self), analyzer: r.resolve(MAMetadataAnalyzer.self)!)
+            c.viewModel = MainViewModel(photoRequestorFactory: { r.resolve(MAPhotoRequestor.self)! },
+                                        analyzer: r.resolve(MAMetadataAnalyzer.self)!,
+                                        realm: r.resolve(Realm.self)!,
+                                        log: r.resolve(XCGLogger.self)
+            )
 		}
         
         defaultContainer.register(XCGLogger.self) { _ in
@@ -44,8 +51,19 @@ extension SwinjectStoryboard {
 			}
 		
 		defaultContainer.register(MAMetadataAnalyzer.self) {r in
-			MABgMetadataAnalyzer(photoRequestorFactory: { r.resolve(ImageMetadataLoader.self)!}, log: r.resolve(XCGLogger.self))
+			MABgMetadataAnalyzer(imageMetadataLoaderFactory: { r.resolve(ImageMetadataLoader.self)!},
+			                     realm:{ r.resolve(Realm.self)!},
+			                     log: r.resolve(XCGLogger.self))
 			}.inObjectScope(ObjectScope.container)
+        
+        defaultContainer.register(Realm.Configuration.self) { _ in
+            // not really necessary if you stick to the defaults everywhere
+            return Realm.Configuration()
+        }
+        
+        defaultContainer.register(Realm.self) { r in
+            try! Realm(configuration: r.resolve(Realm.Configuration.self)!)
+        }
 	}
 }
 

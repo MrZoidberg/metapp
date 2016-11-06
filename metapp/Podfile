@@ -17,6 +17,7 @@ target 'metapp' do
   pod 'Carpaccio', :git => 'https://github.com/MrZoidberg/Carpaccio', :branch => 'master' 
   pod 'XCGLogger', '~> 4.0.0'
   pod 'RealmSwift'
+  pod 'RxRealm'
 
   target 'metappTests' do
     inherit! :search_paths

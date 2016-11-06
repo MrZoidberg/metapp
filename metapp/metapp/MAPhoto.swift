@@ -11,17 +11,22 @@ import UIKit
 import Photos
 import RxDataSources
 import RealmSwift
+import RxRealm
 
 final class MAPhoto: Object {
     var image: UIImage?
     var asset: PHAsset?
     
-    dynamic var id: String?
+    public dynamic var id: String? = nil
+    public dynamic var metadata: MAImageMetadata?
+    public dynamic var modificationDate: NSDate? = nil
     
-    convenience init(id: String, asset: PHAsset) {
+    convenience init(id: String, asset: PHAsset, metadata: MAImageMetadata) {
         self.init()
         self.id = id
         self.asset = asset
+        self.metadata = metadata
+        self.modificationDate  = asset.modificationDate as NSDate?
     }
     
     override static func ignoredProperties() -> [String] {
