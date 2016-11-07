@@ -24,11 +24,6 @@ final class MACachedPhotoRequestor: PHCachingImageManager, MAPhotoRequestor {
     }
     
     func requestImage(_ imageId: String, _ imageSize: CGSize, _ usingBlock: @escaping (UIImage) -> Void) {
-        let options = PHImageRequestOptions()
-        options.isNetworkAccessAllowed = true
-        options.isSynchronous = false
-        options.deliveryMode = .fastFormat
-        
         let fetchOptions = PHFetchOptions()
         fetchOptions.wantsIncrementalChangeDetails = false
         
@@ -38,6 +33,11 @@ final class MACachedPhotoRequestor: PHCachingImageManager, MAPhotoRequestor {
         guard let asset = fetchResults.firstObject else {
             return
         }
+        
+        let options = PHImageRequestOptions()
+        options.isNetworkAccessAllowed = true
+        options.isSynchronous = false
+        options.deliveryMode = .opportunistic
         
         self.requestImage(for: asset, targetSize: imageSize, contentMode: .aspectFit, options: options)
         { result, info in

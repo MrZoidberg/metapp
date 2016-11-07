@@ -11,12 +11,18 @@ import RealmSwift
 import Carpaccio
 
 class MAImageMetadata: Object {
+    public dynamic var id: String? = UUID().uuidString
+    
 	dynamic var exifMetadata: MAExifMetadata?
     
     convenience init(_ metadata: ImageMetadata) {
         self.init()
         
         exifMetadata = MAExifMetadata(metadata.exif)
+    }
+    
+    override class func primaryKey() -> String {
+        return "id"
     }
 }
 
@@ -92,11 +98,6 @@ class MAExifMetadata: Object
         set {
             flashModeRawValue.value = newValue?.rawValue
         }
-    }
-    
-    
-    override class func primaryKey() -> String {
-        return "imageId"
     }
     
     convenience init(_ exif: ExifMetadata) {

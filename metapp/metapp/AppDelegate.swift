@@ -15,6 +15,24 @@ import RealmSwift
 
 typealias RealmFactory = () -> Realm
 
+func synchronized(_ lock: AnyObject, _ body: () -> ()) {
+    objc_sync_enter(lock)
+    defer {
+        objc_sync_exit(lock)
+    }
+    body()
+}
+
+func synchronized<T>(_ lockObj: AnyObject!, _ closure: () throws -> T) rethrows ->  T
+{
+    objc_sync_enter(lockObj)
+    defer {
+        objc_sync_exit(lockObj)
+    }
+    
+    return try closure()
+}
+
 extension SwinjectStoryboard {
 	class func setup() {
 		
@@ -64,6 +82,10 @@ extension SwinjectStoryboard {
         defaultContainer.register(Realm.self) { r in
             try! Realm(configuration: r.resolve(Realm.Configuration.self)!)
         }
+        
+        defaultContainer.register(PhotoSet.self) { r in
+            return MAPhotoSet((r.resolve(Realm.self)?.object(ofType: MAPhotoSetRepresentation.self, forPrimaryKey: PhotoSetId.main.rawValue)) ?? MAPhotoSetRepresentation(), realm: { r.resolve(Realm.self)!})
+        }.inObjectScope(ObjectScope.container)
 	}
 }
 

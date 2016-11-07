@@ -91,8 +91,6 @@ final class MainViewController: UIViewController, Loggable {
             })
             .addDisposableTo(disposeBag)
         
-        //let a = progressView.rx.progress.asObserver()
-        
         viewModel?.analyzerProgress?.map({ p in
                 return Float(p) / 100
             })
@@ -104,25 +102,6 @@ final class MainViewController: UIViewController, Loggable {
             self?.applyCollectionChange(changes)
         })
         
-        //bind PhotoCell to data source
-        /*
-		collectionDataSource.configureCell = {[unowned self] (ds, cv, ip, i) in
-			let cell = cv.dequeueReusableCell(withReuseIdentifier: "PhotoCell", for: ip) as! PhotoCell
-            let photoModel: MAPhoto = ds[ip]
-            cell.viewModel = photoModel
-			self.viewModel!.requestImage(photoModel.asset!, {[weak self] (image) in
-				self?.log?.debug("loading photo \(photoModel.identity) +  for \(ip.description)")
-				cell.image.image = image
-			})
-			return cell
-        }
-        */
-        //bind delegate to collectionView
-        /*
-        self.collectionView.rx
-			.setDelegate(self)
-			.addDisposableTo(disposeBag)
-		*/
         registerForPreviewing(with: self, sourceView: self.collectionView!)
 	}
     
@@ -134,22 +113,7 @@ final class MainViewController: UIViewController, Loggable {
 		super.didReceiveMemoryWarning()
 		// Dispose of any resources that can be recreated.
 	}
-    /*
-    override public func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
-        super.viewWillTransitionToSize(size, withTransitionCoordinator: coordinator)
-        
-        self.collectionViewLayout.invalidateLayout()
-    }
- 
     
-    public override func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
-        return self.fetchedResultsController.numberOfSections()
-    }
-    
-    public override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return self.fetchedResultsController.numberOfRowsForSectionIndex(section)
-    }
-    */
     func calcOptimalImageSize() -> CGSize {
         self.collectionView!.collectionViewLayout.invalidateLayout()
         let contentSize = self.collectionView!.collectionViewLayout.collectionViewContentSize

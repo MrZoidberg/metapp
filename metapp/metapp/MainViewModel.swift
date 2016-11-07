@@ -53,22 +53,34 @@ final class MainViewModel: MAViewModel {
     
 		// Never load photos Unless the user allows to access to photo album
 		checkPhotoAuth({() -> Void in
-			
-			// Sorting condition
-			let options = PHFetchOptions()
-            options.includeAllBurstAssets = true
-			options.sortDescriptors = [
-				NSSortDescriptor(key: "creationDate", ascending: false)
-			]
-			//options.fetchLimit = 100
-			
-			self.fetchResult = PHAsset.fetchAssets(with: .image, options: options)
-            self.sendPhotosToAnalyzer()
-			PHPhotoLibrary.shared().register(self)
+            DispatchQueue.global(qos: .background).async {[weak self] in
+                self?.startPhotoAnalyzer()
+            }
         },{ () -> Void in
 				
 		})
 	}
+    
+    private func startPhotoAnalyzer() {
+        // Sorting condition
+        let options = PHFetchOptions()
+        options.includeAssetSourceTypes = .typeUserLibrary
+        if Settings.lastAnalyzedModificationDate != nil {
+            options.sortDescriptors = [
+                NSSortDescriptor(key: "modificationDate", ascending: true)
+            ]
+            options.predicate = NSPredicate(format: "modificationDate > %@", Settings.lastAnalyzedModificationDate! as NSDate)
+        } else {
+            options.sortDescriptors = [
+                NSSortDescriptor(key: "modificationDate", ascending: false)
+            ]
+        }
+        //options.fetchLimit = 100
+        
+        self.fetchResult = PHAsset.fetchAssets(with: .image, options: options)
+        self.sendPhotosToAnalyzer()
+        PHPhotoLibrary.shared().register(self)
+    }
     
     private func sendPhotosToAnalyzer() {
         let count = self.fetchResult!.count

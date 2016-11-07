@@ -20,6 +20,7 @@ final class MAPhoto: Object {
     public dynamic var id: String? = nil
     public dynamic var metadata: MAImageMetadata?
     public dynamic var modificationDate: NSDate? = nil
+    public dynamic var creationDate: NSDate? = nil
     
     convenience init(id: String, asset: PHAsset, metadata: MAImageMetadata) {
         self.init()
@@ -27,10 +28,15 @@ final class MAPhoto: Object {
         self.asset = asset
         self.metadata = metadata
         self.modificationDate  = asset.modificationDate as NSDate?
+        self.creationDate = asset.creationDate as NSDate?
     }
     
     override static func ignoredProperties() -> [String] {
         return ["image", "asset"]
+    }
+    
+    override static func indexedProperties() -> [String] {
+        return ["modificationDate"]
     }
     
     override static func primaryKey() -> String? {

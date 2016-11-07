@@ -114,6 +114,17 @@ final class MABgMetadataAnalyzer: MAMetadataAnalyzer {
                 try! realm.commitWrite()
             }
             
+            synchronized(self) {
+                guard let lastModifDate = Settings.lastAnalyzedModificationDate, let currentModifDate = photo?.modificationDate as Date? else {
+                    Settings.lastAnalyzedModificationDate = photo?.modificationDate as Date?
+                    return
+                }
+                
+                if lastModifDate < currentModifDate {
+                     Settings.lastAnalyzedModificationDate = currentModifDate
+                }
+            }
+            
             let end = DispatchTime.now()
             self.reportProgress(start, end)
 		}

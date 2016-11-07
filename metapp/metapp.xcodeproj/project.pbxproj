@@ -20,6 +20,8 @@
 		3D8E346C1D95711100B7D908 /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D8E346B1D95711100B7D908 /* Photos.framework */; };
 		3D8E346E1D95905A00B7D908 /* MAPhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D8E346D1D95905A00B7D908 /* MAPhoto.swift */; };
 		3DF5A5B31DCCE9D800FE5456 /* MAImageMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DF5A5B21DCCE9D800FE5456 /* MAImageMetadata.swift */; };
+		741800C71DD123CE00C3F454 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 741800C61DD123CE00C3F454 /* Settings.swift */; };
+		741800C91DD135C400C3F454 /* MAPhotoSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 741800C81DD135C400C3F454 /* MAPhotoSet.swift */; };
 		744EA7021DC93D45002CB64E /* MACachedPhotoRequestor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 744EA7011DC93D45002CB64E /* MACachedPhotoRequestor.swift */; };
 		744EA7041DC95714002CB64E /* Loggable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 744EA7031DC95714002CB64E /* Loggable.swift */; };
 		744EA7061DC95D62002CB64E /* PeekPhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 744EA7051DC95D62002CB64E /* PeekPhotoViewController.swift */; };
@@ -69,6 +71,8 @@
 		3D8E346D1D95905A00B7D908 /* MAPhoto.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MAPhoto.swift; sourceTree = "<group>"; };
 		3DF5A5B21DCCE9D800FE5456 /* MAImageMetadata.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MAImageMetadata.swift; sourceTree = "<group>"; };
 		66D1E1B1077A92B52CCF2F15 /* Pods-metappTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-metappTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-metappTests/Pods-metappTests.debug.xcconfig"; sourceTree = "<group>"; };
+		741800C61DD123CE00C3F454 /* Settings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
+		741800C81DD135C400C3F454 /* MAPhotoSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MAPhotoSet.swift; sourceTree = "<group>"; };
 		744EA7011DC93D45002CB64E /* MACachedPhotoRequestor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MACachedPhotoRequestor.swift; sourceTree = "<group>"; };
 		744EA7031DC95714002CB64E /* Loggable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Loggable.swift; sourceTree = "<group>"; };
 		744EA7051DC95D62002CB64E /* PeekPhotoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeekPhotoViewController.swift; sourceTree = "<group>"; };
@@ -147,6 +151,7 @@
 				3D6741891D943CC90096074E /* Assets.xcassets */,
 				3D67418E1D943CC90096074E /* Info.plist */,
 				744EA7031DC95714002CB64E /* Loggable.swift */,
+				741800C61DD123CE00C3F454 /* Settings.swift */,
 			);
 			path = metapp;
 			sourceTree = "<group>";
@@ -192,6 +197,7 @@
 			children = (
 				3D8E346D1D95905A00B7D908 /* MAPhoto.swift */,
 				3DF5A5B21DCCE9D800FE5456 /* MAImageMetadata.swift */,
+				741800C81DD135C400C3F454 /* MAPhotoSet.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -538,12 +544,14 @@
 			files = (
 				3D6741851D943CC90096074E /* MainViewController.swift in Sources */,
 				3D6741B51D944E6E0096074E /* MAViewModel.swift in Sources */,
+				741800C71DD123CE00C3F454 /* Settings.swift in Sources */,
 				3DF5A5B31DCCE9D800FE5456 /* MAImageMetadata.swift in Sources */,
 				744EA7041DC95714002CB64E /* Loggable.swift in Sources */,
 				744EA70C1DCA90F5002CB64E /* Timer.swift in Sources */,
 				3D6741831D943CC90096074E /* AppDelegate.swift in Sources */,
 				744EA7021DC93D45002CB64E /* MACachedPhotoRequestor.swift in Sources */,
 				744EA70E1DCA987C002CB64E /* Deque.swift in Sources */,
+				741800C91DD135C400C3F454 /* MAPhotoSet.swift in Sources */,
 				744EA7091DCA9059002CB64E /* MAMetadataAnalyzer.swift in Sources */,
 				3D6741B71D944FB90096074E /* MainViewModel.swift in Sources */,
 				744EA7061DC95D62002CB64E /* PeekPhotoViewController.swift in Sources */,
